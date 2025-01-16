@@ -121,7 +121,7 @@ export default function LegalAssistant() {
         <Card className="bg-white">
           <CardHeader>
             <CardTitle>Tell us about your situation</CardTitle>
-            <CardDescription>Fill in the details below and we'll provide relevant legal information</CardDescription>
+            <CardDescription>Fill in the details below and we&apos;ll provide relevant legal information</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
