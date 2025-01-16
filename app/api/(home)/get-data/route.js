@@ -2,6 +2,9 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
+export const maxDuration = 60; // This function can run for a maximum of 5 seconds
+export const dynamic = 'force-dynamic';
+
 export async function POST(req) {
     try {
         const { country, state, age, gender, problem } = await req.json();
