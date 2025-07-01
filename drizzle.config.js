@@ -15,7 +15,6 @@ export default {
     dbCredentials: {
         host: "localhost",
         user: "root",
-        database: "chat_stories",
-        password: ''
+        database: "ai_lawyer",
     }
 };
