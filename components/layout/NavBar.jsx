@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { Menu, X, User, LogOut, BookOpen, Home, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
-import { isAuthenticated, getUserFromToken, logout } from '@/lib/auth-client';
+import { isAuthenticated, getUserFromToken } from '@/lib/auth-client';
 
 export default function NavBar() {
   const router = useRouter();
@@ -55,12 +55,12 @@ export default function NavBar() {
     setIsUserMenuOpen(false);
   };
 
-  const handleLogout = () => {
-    logout();
-    setIsAuth(false);
-    setUser(null);
-    setIsUserMenuOpen(false);
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   setIsAuth(false);
+  //   setUser(null);
+  //   setIsUserMenuOpen(false);
+  // };
 
   const handleAuthAction = (action) => {
     const currentPath = window.location.pathname;
