@@ -26,15 +26,20 @@
     "paths": {
       "@/*": ["./*"],
       "@/utils/*": ["./utils/*"],
-      "@/components/*": ["./components/*"]
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"]
     }
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
+    "**/*.js",
+    "**/*.jsx",
     "**/*.ts",
-    "**/*.tsx"
-, "app/layout.jsx", "app/(routes)/home/page.jsx"  ],
+    "**/*.tsx",
+    "app/layout.jsx",
+    "app/(routes)/home/page.jsx"
+, "app/(routes)/auth/signup/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]

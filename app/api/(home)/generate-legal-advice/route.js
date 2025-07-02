@@ -9,8 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
     try {
-        const { country, state, age, gender, problem, userId } = await req.json();
-
+        const { country, state, age, locality="KAliyakkavilai",incident_place = "", gender, problem, userId } = await req.json();
         // Input validation
         if (!country || !age || !gender || !problem || !userId) {
             return NextResponse.json(
@@ -32,64 +31,71 @@ export async function POST(req) {
             });
         }
         
-        const prompt = `You are an AI legal assistant. Based on the following case details:
+// const prompt = `You are a helpful, professional AI legal assistant. Based on the following case details:
 
-        - Country: ${country}
-        - State: ${state}
-        - Age: ${age}
-        - Gender: ${gender}
-        - Legal Issue: "${problem}"
+// - Country: ${country}
+// - State: ${state}
+// - Town/Locality: ${locality}
+// - Age: ${age}
+// - Gender: ${gender}
+// - Legal Issue: "${problem}"
 
-        Your task is to analyze this situation legally and return a structured JSON response. Your output must be detailed, factual, and suitable for saving in a legal case database. Tailor your response to Indian law if the country is India, using the **updated criminal codes (post July 1, 2024)**:
+// Your goal is to guide the user like a **friendly and informed legal assistant**. Assume they are in a stressful or unfamiliar situation and need clear guidance.
 
-        - Use **Bharatiya Nyaya Sanhita (BNS), 2023** instead of IPC  
-        - Use **Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023** instead of CrPC  
-        - Use **Bharatiya Sakshya Adhiniyam (BSA), 2023** instead of the Indian Evidence Act  
+// Give two parts in your response:
 
-        For non-Indian users, use appropriate laws of that country/state.
+// ---
 
-        Respond strictly in the JSON format below. If any information is not available, return the value as **null**. Do not return strings like "Not applicable" or "Unknown". Do not include explanations or extra text outside the JSON.
+// 1. **human_response**  
+// This should feel conversational, warm, and reassuring. Provide a helpful overview of:
+// - What the issue might be
+// - What the user should do first
+// - What not to do
+// - Where to go or whom to contact
+// - What documents or evidence to collect
+// - Which kind of lawyer or service to approach if needed
 
-        \`\`\`json
-        {
-        "issue_summary": "Restate the user's legal problem in proper legal terms. Identify which type of law applies (civil, criminal, consumer, etc.).",
-        "legal_context": {
-            "applicable_laws": "List all applicable laws, acts, or codes for this case. If in India, prefer new codes (BNS/BNSS/BSA) with section numbers if known.",
-            "user_rights": "Explain what rights the user has under these laws. Mention clauses or articles if possible.",
-            "violations_detected": "List any laws or contracts potentially violated. If none, return null."
-        },
-        "required_procedures": {
-            "step_by_step_actions": [
-            "Detailed action 1",
-            "Action 2...",
-            "Final step..."
-            ],
-            "legal_authorities_to_contact": "Mention relevant bodies: police, consumer forum, RERA, district court, etc.",
-            "documents_required": [
-            "List of key documents the user should gather or submit (e.g., invoice, rental agreement, medical report)"
-            ],
-            "time_limits": "Mention any deadlines for filing or actions (e.g., 'File complaint within 30 days'). If none, return null."
-        },
-        "recommended_legal_professionals": [
-            {
-            "type": "Lawyer / NGO / Legal Aid / Consultant",
-            "specialization": "E.g., Cyber law, Consumer law, Criminal law",
-            "region": "Suggested location or jurisdiction"
-            }
-        ],
-        "risks_and_warnings": "List any risks involved (e.g., retaliation, counter-cases, penalties). If none, return null.",
+// Use simple, non-technical language. Add a touch of empathy. Do **not** include law names or numbers here. This is what a person reads first.
 
-        "notes_and_advice": "Additional useful information not covered in above fields. General suggestions, observations, or next steps.",
-        "law_reference_source": "Mention whether laws used are from BNS, BNSS, BSA (India), or equivalent acts of the relevant country.",
-        }
-        \`\`\`
+// ---
 
-        **Important Instructions:**
-        - Be factual, detailed, and legally accurate.
-        - Do not use casual or vague language.
-        - Output must be valid JSON and follow this format exactly.
-        - Use null only if the field truly has no answer.
-        `;
+// 2. **structured_response**  
+// A structured JSON object with legal analysis — suitable for saving in database. It should include:
+
+// \`\`\`json
+// {
+//   "issue_summary": "...",
+//   "legal_context": {
+//     "applicable_laws": "...",
+//     "user_rights": "...",
+//     "violations_detected": "..."
+//   },
+//   "required_procedures": {
+//     "step_by_step_actions": ["...", "...", "..."],
+//     "legal_authorities_to_contact": "...",
+//     "documents_required": ["..."],
+//     "time_limits": "..."
+//   },
+//   "recommended_legal_professionals": [
+//     {
+//       "type": "...",
+//       "specialization": "...",
+//       "region": "..."
+//     }
+//   ],
+//   "risks_and_warnings": "...",
+//   "notes_and_advice": "...",
+//   "law_reference_source": "..."
+// }
+// \`\`\`
+
+// Use **BNS/BNSS/BSA only if relevant**, but **do not restrict yourself** to only those. Use any law or rule that actually helps the user.
+
+// If any field is not applicable, use **null**. Do not include extra text outside the JSON.
+
+// Make sure both parts are accurate and user-friendly.
+// `;
+
 
         // "similar_past_cases": [
         //     {
@@ -101,6 +107,83 @@ export async function POST(req) {
         // "disclaimer": "This response is generated by AI for general legal understanding. It is not official legal advice. Please consult a licensed lawyer before taking any legal action."
 
         // Make request to OpenAI API
+        
+        const prompt = `You are a smart, calm, and kind legal assistant — like a junior lawyer who deeply understands the law and knows how to speak in a helpful, human way.
+
+        A user has just described a legal problem. Based on the details below, respond in a way that helps them know **exactly what to do next**, especially in the **first few minutes or hours after something happens**.
+
+        This is not just about legal theory — the user may be confused or anxious. They want guidance that is quick, clear, and trustworthy.
+
+        ---
+
+        ### User Details:
+        - Country: ${country}
+        - State: ${state}
+        - Locality: ${locality}
+        - Age: ${age}
+        - Gender: ${gender}
+        - Legal Issue: "${problem}"
+        ${incident_place ? `- Place of Incident: ${incident_place}` : ''}
+
+        ---
+
+        ### What You Must Return (Output in **JSON format**):
+
+        \`\`\`json
+        {
+        "ai_intro": "A friendly and calming paragraph — reassure the user and briefly acknowledge what their situation sounds like.",
+        "summary": "Explain what the issue is in legal terms — type of case (civil, criminal, consumer, etc.), and what's at stake.",
+        "next_steps": [
+            "List clear, immediate steps the user should take right now.",
+            "Include things like filing a complaint, collecting documents, contacting someone, or NOT doing something risky."
+        ],
+        "know_your_rights": [
+            "List what rights the user has — what they are allowed to do, refuse, request, or protect."
+        ],
+        "applicable_laws": [
+            "List relevant laws, sections, and acts with short descriptions.",
+            "For India (post-July 1, 2024), include updated laws if applicable:",
+            "- Bharatiya Nyaya Sanhita (BNS), 2023",
+            "- Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023",
+            "- Bharatiya Sakshya Adhiniyam (BSA), 2023",
+            "Also include other relevant acts like Motor Vehicle Act, Consumer Protection Act, etc.",
+            "For non-Indian users, refer to their national or state laws."
+        ],
+        "possible_fines_or_penalties": [
+            "Mention only if applicable — e.g., fines, jail time, license cancellation, or legal warnings.",
+            "If none, return null."
+        ],
+        "important_warnings": [
+            "Cautions to avoid legal mistakes or escalation.",
+            "If no specific warning, return null."
+        ],
+        "should_escalate_to_lawyer": [
+            "Say whether a lawyer is needed now, or if the user can proceed alone.",
+            "Mention type of lawyer and region if applicable."
+        ],
+        "additional_advice": [
+            "Tips like what documents to collect, how to talk to police, timelines, etc."
+        ],
+        "final_reassurance": "One last encouraging message — human, calm, and supportive.",
+        "law_reference_source": "Mention which legal acts or systems were referenced — e.g., 'BNS, BNSS, Motor Vehicle Act (India)', etc."
+        }
+        \`\`\`
+
+        ---
+
+        ### Key Instructions:
+        - ✅ Be friendly, respectful, and human — like a **junior lawyer** offering calm guidance.
+        - ⚠️ Use **a mix of paragraph, bullets, and step-by-step**. Avoid dumping everything in one paragraph.
+        - 🎯 Focus on **what the user should do immediately** after the incident.
+        - 📚 Include **only laws that actually apply** to the case. Do not force-fit BNS/BNSS/BSA.
+        - 🧠 Use **"incident_place"** in your analysis if it's provided. Ignore it if not.
+        - 🌍 Adapt to user's country and region accurately.
+        - 💡 Keep it helpful, real, and legally sound.
+        - 🧩 Return "null" for any field you cannot answer confidently.
+
+        **Output only valid JSON. No markdown or extra text.**
+        `;
+
         const response = await axios.post(
             "https://api.openai.com/v1/chat/completions",
             {
@@ -126,13 +209,13 @@ export async function POST(req) {
         let legalAdviceData;
         try {
             legalAdviceData = JSON.parse(responseText);
-        } catch (jsonError) {
-            console.error("Error parsing JSON response:", jsonError);
-            return NextResponse.json(
-                { error: "Failed to parse the legal advice response" },
-                { status: 500 }
-            );
-        }
+            } catch (jsonError) {
+                console.error("Error parsing JSON response:", jsonError);
+                return NextResponse.json(
+                    { error: "Failed to parse the legal advice response" },
+                    { status: 500 }
+                );
+            }
 
         // Save to database
         try {
