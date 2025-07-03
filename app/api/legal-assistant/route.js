@@ -2,20 +2,192 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
+// export async function POST(req) {
+//     try {
+//         const requestData = await req.json();
+//         const { country, state, locality, age, gender, problem, incident_place } = requestData;
+
+//         // Validate required fields
+//         if (!country || !state || !locality || !age || !gender || !problem) {
+//             return NextResponse.json(
+//                 { error: "Missing required fields" },
+//                 { status: 400 }
+//             );
+//         }
+
+//         const prompt = `You are a smart, calm, and kind legal assistant — like a junior lawyer who deeply understands the law and knows how to speak in a helpful, human way.
+
+//         A user has just described a legal problem. Based on the details below, respond in a way that helps them know **exactly what to do next**, especially in the **first few minutes or hours after something happens**.
+
+//         This is not just about legal theory — the user may be confused or anxious. They want guidance that is quick, clear, and trustworthy.
+
+//         ---
+
+//         ### User Details:
+//         - Country: ${country}
+//         - State: ${state}
+//         - Locality: ${locality}
+//         - Age: ${age}
+//         - Gender: ${gender}
+//         - Legal Issue: "${problem}"
+//         ${incident_place ? `- Place of Incident: ${incident_place}` : ''}
+
+//         ---
+
+//         ### What You Must Return (Output in **JSON format**):
+
+//         \`\`\`json
+//         {
+//         "ai_intro": "A friendly and calming paragraph — reassure the user and briefly acknowledge what their situation sounds like.",
+//         "summary": "Explain what the issue is in legal terms — type of case (civil, criminal, consumer, etc.), and what's at stake.",
+//         "next_steps": [
+//             "List clear, immediate steps the user should take right now.",
+//             "Include things like filing a complaint, collecting documents, contacting someone, or NOT doing something risky."
+//         ],
+//         "know_your_rights": [
+//             "List what rights the user has — what they are allowed to do, refuse, request, or protect."
+//         ],
+//         "applicable_laws": [
+//             "List relevant laws, sections, and acts with short descriptions.",
+//             "For India (post-July 1, 2024), include updated laws if applicable:",
+//             "- Bharatiya Nyaya Sanhita (BNS), 2023",
+//             "- Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023",
+//             "- Bharatiya Sakshya Adhiniyam (BSA), 2023",
+//             "Also include other relevant acts like Motor Vehicle Act, Consumer Protection Act, etc.",
+//             "For non-Indian users, refer to their national or state laws."
+//         ],
+//         "possible_fines_or_penalties": [
+//             "Mention only if applicable — e.g., fines, jail time, license cancellation, or legal warnings.",
+//             "If none, return null."
+//         ],
+//         "important_warnings": [
+//             "Cautions to avoid legal mistakes or escalation.",
+//             "If no specific warning, return null."
+//         ],
+//         "should_escalate_to_lawyer": [
+//             "Say whether a lawyer is needed now, or if the user can proceed alone.",
+//             "Mention type of lawyer and region if applicable."
+//         ],
+//         "additional_advice": [
+//             "Tips like what documents to collect, how to talk to police, timelines, etc."
+//         ],
+//         "final_reassurance": "One last encouraging message — human, calm, and supportive.",
+//         "law_reference_source": "Mention which legal acts or systems were referenced — e.g., 'BNS, BNSS, Motor Vehicle Act (India)', etc."
+//         }
+//         \`\`\`
+
+//         ---
+
+//         ### Key Instructions:
+//         - ✅ Be friendly, respectful, and human — like a **junior lawyer** offering calm guidance.
+//         - ⚠️ Use **a mix of paragraph, bullets, and step-by-step**. Avoid dumping everything in one paragraph.
+//         - 🎯 Focus on **what the user should do immediately** after the incident.
+//         - 📚 Include **only laws that actually apply** to the case. Do not force-fit BNS/BNSS/BSA.
+//         - 🧠 Use **"incident_place"** in your analysis if it's provided. Ignore it if not.
+//         - 🌍 Adapt to user's country and region accurately.
+//         - 💡 Keep it helpful, real, and legally sound.
+//         - 🧩 Return "null" for any field you cannot answer confidently.
+
+//         **Output only valid JSON. No markdown or extra text.**
+//         `;
+
+//         const response = await axios.post(
+//             "https://api.openai.com/v1/chat/completions",
+//             {
+//                 model: "gpt-4.1-nano",
+//                 messages: [{ role: "user", content: prompt }],
+//                 max_tokens: 3000,
+//                 temperature: 0.3,
+//             },
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+//                     "Content-Type": "application/json",
+//                 },
+//             }
+//         );
+
+//         // Parse the response
+//         let responseText = response.data.choices[0].message.content.trim();
+//         responseText = responseText.replace(/```json|```/g, "").trim();
+
+//         console.log('AI Response:', responseText);
+
+//         let legalAdviceData;
+//         try {
+//             legalAdviceData = JSON.parse(responseText);
+//         } catch (jsonError) {
+//             console.error("Error parsing JSON response:", jsonError);
+//             return NextResponse.json(
+//                 { error: "Failed to parse the legal advice response" },
+//                 { status: 500 }
+//             );
+//         }
+
+//         return NextResponse.json({
+//             success: true,
+//             data: legalAdviceData
+//         });
+
+//     } catch (error) {
+//         console.error("Error in legal assistant API:", error);
+//         return NextResponse.json(
+//             { error: "Internal server error" },
+//             { status: 500 }
+//         );
+//     }
+// }
+
 export async function POST(req) {
-    try {
-        const requestData = await req.json();
-        const { country, state, locality, age, gender, problem, incident_place } = requestData;
+  try {
+    const requestData = await req.json();
+    const {
+      nationality,
+      age,
+      gender,
+      religion,
+      country,
+      state,
+      locality,
+      incident_place,
+      problem,
+      // New fields from frontend
+      isEmergency,
+      dateTime,
+      isInjuredOrThreatened,
+      isVehicleInvolved,
+      vehicleDetails,
+    } = requestData;
 
-        // Validate required fields
-        if (!country || !state || !locality || !age || !gender || !problem) {
-            return NextResponse.json(
-                { error: "Missing required fields" },
-                { status: 400 }
-            );
-        }
 
-        const prompt = `You are a smart, calm, and kind legal assistant — like a junior lawyer who deeply understands the law and knows how to speak in a helpful, human way.
+    console.log("Received Request Data:", {
+        nationality,
+        age,
+        gender,
+        religion,
+        country,
+        state,
+        locality,
+        incident_place,
+        problem,
+        isEmergency,
+        dateTime,
+        isInjuredOrThreatened,
+        isVehicleInvolved,
+        vehicleDetails
+    });
+
+
+    // Validate required fields
+    if (!nationality || !age || !gender || !country || !state || !locality || !dateTime || !problem) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Prompt
+    const prompt = `You are a smart, calm, and kind legal assistant — like a junior lawyer who deeply understands the law and knows how to speak in a helpful, human way.
 
         A user has just described a legal problem. Based on the details below, respond in a way that helps them know **exactly what to do next**, especially in the **first few minutes or hours after something happens**.
 
@@ -24,13 +196,26 @@ export async function POST(req) {
         ---
 
         ### User Details:
+
+        **Person Seeking Help:**
+        - Nationality: ${nationality}
+        - Age: ${age}
+        - Gender: ${gender}
+        - Religion: ${religion || "Not specified"}
+
+        **Incident Details:**
         - Country: ${country}
         - State: ${state}
         - Locality: ${locality}
-        - Age: ${age}
-        - Gender: ${gender}
+        - Place of Incident: ${incident_place || "Not specified"}
         - Legal Issue: "${problem}"
-        ${incident_place ? `- Place of Incident: ${incident_place}` : ''}
+        - Date & Time of Event: ${dateTime || "Not specified"}
+
+        **Additional Emergency Info (if provided):**
+        - Emergency: ${isEmergency === null ? "Not specified" : isEmergency ? "Yes" : "No"}
+        - Injured or Threatened: ${isInjuredOrThreatened === null ? "Not specified" : isInjuredOrThreatened ? "Yes" : "No"}
+        - Vehicle Involved: ${isVehicleInvolved === null ? "Not specified" : isVehicleInvolved ? "Yes" : "No"}
+        - Vehicle Details: ${vehicleDetails || "Not specified"}
 
         ---
 
@@ -48,22 +233,33 @@ export async function POST(req) {
             "List what rights the user has — what they are allowed to do, refuse, request, or protect."
         ],
         "applicable_laws": [
-            "List relevant laws, sections, and acts with short descriptions.",
-            "For India (post-July 1, 2024), include updated laws if applicable:",
-            "- Bharatiya Nyaya Sanhita (BNS), 2023",
-            "- Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023",
-            "- Bharatiya Sakshya Adhiniyam (BSA), 2023",
-            "Also include other relevant acts like Motor Vehicle Act, Consumer Protection Act, etc.",
-            "For non-Indian users, refer to their national or state laws."
+            "List the most relevant, current laws and legal provisions applicable in the region where the incident occurred.",
+            "Return as an array of objects with exact structure:",
+            "CRITICAL: Use ONLY current, valid laws based on incident date:",
+            "- For Indian cases after July 1, 2024: Use BNS (Bharatiya Nyaya Sanhita), BNSS (Bharatiya Nagarik Suraksha Sanhita), BSA (Bharatiya Sakshya Adhiniyam)",
+            "- For Indian cases before July 1, 2024: Use IPC, CrPC, Indian Evidence Act",
+            "- NEVER mix old and new laws - determine the applicable legal framework based on incident date",
+            "- If incident date is unclear, ask for clarification or assume current date",
+            "Each law object must have exactly this structure:",
+            "{",
+            "  \"Section\": \"Exact Section Number and Name (e.g., Section 351 of Bharatiya Nyaya Sanhita, 2023)\",",
+            "  \"Explanation\": \"A short, clear explanation in simple words of what the law means and why it applies to this case\"",
+            "}",
+            "Do not reference repealed, outdated, or invalid laws for the given time period.",
+            "Avoid vague references — be specific and accurate with section numbers and law names."
         ],
         "possible_fines_or_penalties": [
             "Mention only if applicable — e.g., fines, jail time, license cancellation, or legal warnings.",
             "If none, return null."
         ],
-        "important_warnings": [
-            "Cautions to avoid legal mistakes or escalation.",
-            "If no specific warning, return null."
-        ],
+        "dos_and_donts": {
+            "do": [
+            "List specific, practical actions the user should definitely take — like reporting to the police, collecting medical evidence, etc."
+            ],
+            "dont": [
+            "List common mistakes or risky behaviors to avoid — like threatening someone, posting online, or ignoring summons."
+            ]
+        },
         "should_escalate_to_lawyer": [
             "Say whether a lawyer is needed now, or if the user can proceed alone.",
             "Mention type of lawyer and region if applicable."
@@ -72,7 +268,7 @@ export async function POST(req) {
             "Tips like what documents to collect, how to talk to police, timelines, etc."
         ],
         "final_reassurance": "One last encouraging message — human, calm, and supportive.",
-        "law_reference_source": "Mention which legal acts or systems were referenced — e.g., 'BNS, BNSS, Motor Vehicle Act (India)', etc."
+        "law_reference_source": "Mention which legal systems or acts were referenced — e.g., 'BNS, BNSS, Motor Vehicle Act (India)', etc."
         }
         \`\`\`
 
@@ -82,58 +278,56 @@ export async function POST(req) {
         - ✅ Be friendly, respectful, and human — like a **junior lawyer** offering calm guidance.
         - ⚠️ Use **a mix of paragraph, bullets, and step-by-step**. Avoid dumping everything in one paragraph.
         - 🎯 Focus on **what the user should do immediately** after the incident.
-        - 📚 Include **only laws that actually apply** to the case. Do not force-fit BNS/BNSS/BSA.
-        - 🧠 Use **"incident_place"** in your analysis if it's provided. Ignore it if not.
-        - 🌍 Adapt to user's country and region accurately.
+        - 📚 Include **only updated laws** that apply in the region and time of the incident.
+        - 🧠 Use **Nationality** and **Incident Location** to shape the response.
+        - ⏳ Carefully apply the correct law set depending on **incident_date**.
         - 💡 Keep it helpful, real, and legally sound.
         - 🧩 Return "null" for any field you cannot answer confidently.
 
         **Output only valid JSON. No markdown or extra text.**
         `;
 
-        const response = await axios.post(
-            "https://api.openai.com/v1/chat/completions",
-            {
-                model: "gpt-4.1-nano",
-                messages: [{ role: "user", content: prompt }],
-                max_tokens: 3000,
-                temperature: 0.3,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        // Parse the response
-        let responseText = response.data.choices[0].message.content.trim();
-        responseText = responseText.replace(/```json|```/g, "").trim();
-
-        console.log('AI Response:', responseText);
-
-        let legalAdviceData;
-        try {
-            legalAdviceData = JSON.parse(responseText);
-        } catch (jsonError) {
-            console.error("Error parsing JSON response:", jsonError);
-            return NextResponse.json(
-                { error: "Failed to parse the legal advice response" },
-                { status: 500 }
-            );
+    // Call OpenAI
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4.1-nano",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 3000,
+        temperature: 0.3
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
         }
+      }
+    );
 
-        return NextResponse.json({
-            success: true,
-            data: legalAdviceData
-        });
+    let responseText = response.data.choices[0].message.content.trim();
+    responseText = responseText.replace(/```json|```/g, "").trim();
 
-    } catch (error) {
-        console.error("Error in legal assistant API:", error);
-        return NextResponse.json(
-            { error: "Internal server error" },
-            { status: 500 }
-        );
+    let legalAdviceData;
+    try {
+      legalAdviceData = JSON.parse(responseText);
+    } catch (jsonError) {
+      console.error("Error parsing JSON response:", jsonError);
+      return NextResponse.json(
+        { error: "Failed to parse the legal advice response" },
+        { status: 500 }
+      );
     }
+
+    return NextResponse.json({
+      success: true,
+      data: legalAdviceData
+    });
+
+  } catch (error) {
+    console.error("Error in legal assistant API:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }

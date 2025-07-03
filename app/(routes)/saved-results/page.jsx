@@ -11,7 +11,7 @@ const ResultsModal = ({ query, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[100vh] overflow-hidden">
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 flex justify-between items-center">
           <h2 className="text-2xl font-bold">Legal Advice Details</h2>
@@ -32,175 +32,264 @@ const ResultsModal = ({ query, onClose }) => {
               <p className="text-gray-700">{query.problem}</p>
             </div>
 
-            {/* AI Intro */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100 shadow-lg">
-              <div className="flex items-center mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-bold">AI</span>
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800">Legal Assessment</h2>
-              </div>
-              <p className="text-gray-700 leading-relaxed text-lg">{results.ai_intro}</p>
-            </div>
-
-            {/* Summary */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <span className="w-6 h-6 bg-purple-500 rounded-full mr-3"></span>
-                Case Summary
-              </h3>
-              <p className="text-gray-700 leading-relaxed">{results.summary}</p>
-            </div>
-
-            {/* Next Steps */}
-            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-8 border border-emerald-100 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <span className="w-6 h-6 bg-emerald-500 rounded-full mr-3"></span>
-                Immediate Next Steps
-              </h3>
-              <div className="space-y-4">
-                {results.next_steps?.map((step, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                      {index + 1}
+                {/* AI Intro */}
+                {results.ai_intro && (
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-blue-100 shadow-sm">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                          {/* <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          </div> */}
+                          <div>
+                          {/* <h3 className="text-base sm:text-lg font-semibold text-blue-800 mb-2">Legal Guidance</h3> */}
+                          <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{results.ai_intro}</p>
+                          </div>
+                      </div>
                     </div>
-                    <p className="text-gray-700 pt-1">{step}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+                )}
 
-            {/* Know Your Rights */}
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-8 border border-amber-100 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <span className="w-6 h-6 bg-amber-500 rounded-full mr-3"></span>
-                Know Your Rights
-              </h3>
-              <div className="grid gap-3">
-                {results.know_your_rights?.map((right, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-3 h-3 bg-amber-500 rounded-full mt-2"></div>
-                    <p className="text-gray-700">{right}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Applicable Laws */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <span className="w-6 h-6 bg-indigo-500 rounded-full mr-3"></span>
-                Applicable Laws
-              </h3>
-              <div className="grid gap-3">
-                {results.applicable_laws?.map((law, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-3 h-3 bg-indigo-500 rounded-full mt-2"></div>
-                    <div className="text-gray-700">
-                      {typeof law === "string" ? (
-                        <p>{law}</p>
-                      ) : (
-                        <>
-                          <p className="font-medium">{law.law}</p>
-                          <p className="text-sm text-gray-600">{law.description}</p>
-                        </>
-                      )}
+                {/* Case Summary */}
+                {results.summary && (
+                    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        </div>
+                        <div>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Case Summary</h3>
+                        <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{results.summary}</p>
+                        </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-              {results.law_reference_source && (
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600 italic">
-                    <strong>Reference:</strong> {results.law_reference_source}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Warnings */}
-            {results.important_warnings && (
-              <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-8 border-l-4 border-red-400 shadow-lg">
-                <h3 className="text-xl font-bold text-red-700 mb-6 flex items-center">
-                  <span className="text-2xl mr-3">⚠️</span>
-                  Important Warnings
-                </h3>
-                <div className="grid gap-3">
-                  {results.important_warnings.map((warning, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-3 h-3 bg-red-500 rounded-full mt-2"></div>
-                      <p className="text-red-700">{warning}</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                )}
 
-            {/* Penalties */}
-            {results.possible_fines_or_penalties && (
-              <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-2xl p-8 border-l-4 border-red-500 shadow-lg">
-                <h3 className="text-xl font-bold text-red-800 mb-6 flex items-center">
-                  <span className="w-6 h-6 bg-red-500 rounded-full mr-3"></span>
-                  Possible Penalties
-                </h3>
-                <div className="grid gap-3">
-                  {results.possible_fines_or_penalties.map((penalty, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-3 h-3 bg-red-500 rounded-full mt-2"></div>
-                      <p className="text-red-700">{penalty}</p>
+                {/* Next Steps */}
+                {Array.isArray(results.next_steps) && results.next_steps.length > 0 && (
+                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-emerald-100 shadow-sm">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Immediate Next Steps</h3>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Lawyer Recommendation */}
-            <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl p-8 border border-purple-100 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <span className="w-6 h-6 bg-purple-500 rounded-full mr-3"></span>
-                Legal Representation
-              </h3>
-              <div className="grid gap-3">
-                {Array.isArray(results.should_escalate_to_lawyer) ? (
-                  results.should_escalate_to_lawyer.map((advice, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-3 h-3 bg-purple-500 rounded-full mt-2"></div>
-                      <p className="text-gray-700">{advice}</p>
+                    <div className="space-y-3 sm:space-y-4 ml-11 sm:ml-14">
+                        {results.next_steps.map((step, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold flex-shrink-0">
+                            {index + 1}
+                            </div>
+                            <p className="text-gray-700 pt-1 text-sm sm:text-base leading-relaxed">{step}</p>
+                        </div>
+                        ))}
                     </div>
-                  ))
-                ) : results.should_escalate_to_lawyer ? (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-3 h-3 bg-purple-500 rounded-full mt-2"></div>
-                    <p className="text-gray-700">{results.should_escalate_to_lawyer}</p>
-                  </div>
-                ) : null}
-              </div>
-            </div>
+                    </div>
+                )}
 
-            {/* Additional Advice */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <span className="w-6 h-6 bg-teal-500 rounded-full mr-3"></span>
-                Additional Advice
-              </h3>
-              <div className="grid gap-3">
-                {results.additional_advice?.map((advice, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-3 h-3 bg-teal-500 rounded-full mt-2"></div>
-                    <p className="text-gray-700">{advice}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+                {/* Know Your Rights */}
+                {Array.isArray(results.know_your_rights) && results.know_your_rights.length > 0 && (
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-amber-100 shadow-sm">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Know Your Rights</h3>
+                    </div>
+                    <div className="space-y-3 ml-11 sm:ml-14">
+                        {results.know_your_rights.map((right, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{right}</p>
+                        </div>
+                        ))}
+                    </div>
+                    </div>
+                )}
 
-            {/* Final Reassurance */}
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 border-l-4 border-green-400 shadow-lg">
-              <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center">
-                <span className="text-2xl mr-3">💚</span>
-                Final Message
-              </h3>
-              <p className="text-green-700 leading-relaxed text-lg">{results.final_reassurance}</p>
-            </div>
+                {/* Applicable Laws */}
+                {Array.isArray(results.applicable_laws) && results.applicable_laws.length > 0 && (
+                    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v0" />
+                        </svg>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Applicable Laws</h3>
+                    </div>
+                    <div className="space-y-4 ml-11 sm:ml-14">
+                        {results.applicable_laws.map((law, index) => (
+                        <div key={index} className="bg-indigo-50 rounded-lg p-3 sm:p-4 border-l-4 border-indigo-400">
+                            <div className="text-gray-700">
+                            {typeof law === "string" ? (
+                                <p className="text-sm sm:text-base">{law}</p>
+                            ) : (
+                                <div>
+                                <p className="font-semibold text-indigo-800 mb-2 text-sm sm:text-base">{law.Section}</p>
+                                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{law.Explanation}</p>
+                                </div>
+                            )}
+                            </div>
+                        </div>
+                        ))}
+                    </div>
+                    {results.law_reference_source && (
+                        <div className="mt-4 sm:mt-6 ml-11 sm:ml-14 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                        <p className="text-xs sm:text-sm text-gray-600 italic">
+                            <strong>Reference:</strong> {results.law_reference_source}
+                        </p>
+                        </div>
+                    )}
+                    </div>
+                )}
+
+                {/* Do's and Don'ts */}
+                {results.dos_and_donts && (
+                    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Do's and Don'ts</h3>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ml-11 sm:ml-14">
+                        {results.dos_and_donts.do && (
+                        <div className="bg-green-50 rounded-lg p-3 sm:p-4 border-l-4 border-green-400">
+                            <div className="flex items-center gap-2 mb-3">
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <h4 className="text-sm sm:text-base font-semibold text-green-800">Do's</h4>
+                            </div>
+                            <div className="space-y-2">
+                            {results.dos_and_donts.do.map((item, index) => (
+                                <div key={index} className="flex items-start gap-2">
+                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <p className="text-green-700 text-xs sm:text-sm leading-relaxed">{item}</p>
+                                </div>
+                            ))}
+                            </div>
+                        </div>
+                        )}
+                        {results.dos_and_donts.dont && (
+                        <div className="bg-red-50 rounded-lg p-3 sm:p-4 border-l-4 border-red-400">
+                            <div className="flex items-center gap-2 mb-3">
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-red-500 rounded-full flex items-center justify-center">
+                                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </div>
+                            <h4 className="text-sm sm:text-base font-semibold text-red-800">Don'ts</h4>
+                            </div>
+                            <div className="space-y-2">
+                            {results.dos_and_donts.dont.map((item, index) => (
+                                <div key={index} className="flex items-start gap-2">
+                                <div className="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <p className="text-red-700 text-xs sm:text-sm leading-relaxed">{item}</p>
+                                </div>
+                            ))}
+                            </div>
+                        </div>
+                        )}
+                    </div>
+                    </div>
+                )}
+
+                {/* Penalties */}
+                {Array.isArray(results.possible_fines_or_penalties) && results.possible_fines_or_penalties.length > 0 && (
+                    <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border-l-4 border-red-500 shadow-sm">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold text-red-800">Possible Penalties</h3>
+                    </div>
+                    <div className="space-y-3 ml-11 sm:ml-14">
+                        {results.possible_fines_or_penalties.map((penalty, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-red-700 text-sm sm:text-base leading-relaxed">{penalty}</p>
+                        </div>
+                        ))}
+                    </div>
+                    </div>
+                )}
+
+                {/* Legal Representation */}
+                {results.should_escalate_to_lawyer && (
+                    <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-purple-100 shadow-sm">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Legal Representation</h3>
+                    </div>
+                    <div className="space-y-3 ml-11 sm:ml-14">
+                        {Array.isArray(results.should_escalate_to_lawyer)
+                        ? results.should_escalate_to_lawyer.map((advice, index) => (
+                            <div key={index} className="flex items-start gap-3">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{advice}</p>
+                            </div>
+                            ))
+                        : (
+                            <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{results.should_escalate_to_lawyer}</p>
+                            </div>
+                        )}
+                    </div>
+                    </div>
+                )}
+
+                {/* Additional Advice */}
+                {Array.isArray(results.additional_advice) && results.additional_advice.length > 0 && (
+                    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Additional Advice</h3>
+                    </div>
+                    <div className="space-y-3 ml-11 sm:ml-14">
+                        {results.additional_advice.map((advice, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{advice}</p>
+                        </div>
+                        ))}
+                    </div>
+                    </div>
+                )}
+
+                {/* Final Message */}
+                {results.final_reassurance && (
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border-l-4 border-green-400 shadow-sm">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="text-2xl sm:text-3xl">💚</div>
+                        <div>
+                        <h3 className="text-base sm:text-lg font-semibold text-green-800 mb-2">Final Message</h3>
+                        <p className="text-green-700 leading-relaxed text-sm sm:text-base">{results.final_reassurance}</p>
+                        </div>
+                    </div>
+                    </div>
+                )}
           </div>
         </div>
       </div>
