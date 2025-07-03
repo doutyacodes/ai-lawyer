@@ -733,7 +733,7 @@ console.log("currentStep", currentStep)
           
           <div className="mt-6 sm:mt-8 bg-yellow-500/20 border border-yellow-400/50 rounded-xl p-4 sm:p-6">
             <p className="text-yellow-100 text-xs sm:text-sm">
-              <span className="font-semibold">⚠️ If you're in immediate physical danger:</span><br/>
+              <span className="font-semibold">⚠️ If you&apos;re in immediate physical danger:</span><br/>
               Please contact emergency services (911, 112, or your local emergency number) first.
             </p>
           </div>
@@ -899,7 +899,7 @@ console.log("currentStep", currentStep)
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           </div>
-                          <h3 className="text-base sm:text-lg font-semibold text-gray-800">Do's and Don'ts</h3>
+                          <h3 className="text-base sm:text-lg font-semibold text-gray-800">Do&apos;s and Don&apos;ts</h3>
                       </div>
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ml-11 sm:ml-14">
                           {results.dos_and_donts.do && (
@@ -910,7 +910,7 @@ console.log("currentStep", currentStep)
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                   </svg>
                               </div>
-                              <h4 className="text-sm sm:text-base font-semibold text-green-800">Do's</h4>
+                              <h4 className="text-sm sm:text-base font-semibold text-green-800">Do&apos;s</h4>
                               </div>
                               <div className="space-y-2">
                               {results.dos_and_donts.do.map((item, index) => (
@@ -930,7 +930,7 @@ console.log("currentStep", currentStep)
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                   </svg>
                               </div>
-                              <h4 className="text-sm sm:text-base font-semibold text-red-800">Don'ts</h4>
+                              <h4 className="text-sm sm:text-base font-semibold text-red-800">Don&apos;ts</h4>
                               </div>
                               <div className="space-y-2">
                               {results.dos_and_donts.dont.map((item, index) => (
@@ -1076,7 +1076,7 @@ console.log("currentStep", currentStep)
                     <div>
                       <p className="font-bold text-red-800 mb-1">Emergency Mode Activated</p>
                       <p className="text-red-700 text-sm">
-                        We're prioritizing your emergency. If you're in immediate danger, please contact emergency services first.
+                        We&apos;re prioritizing your emergency. If you&apos;re in immediate danger, please contact emergency services first.
                       </p>
                     </div>
                   </div>
@@ -1093,7 +1093,7 @@ console.log("currentStep", currentStep)
                         <span className="text-white text-lg lg:text-xl">📋</span>
                       </div>
                       <div>
-                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">What's the Emergency?</h2>
+                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">What&apos;s the Emergency?</h2>
                         <p className="text-sm lg:text-base text-gray-600">Describe your urgent legal issue</p>
                       </div>
                     </div>

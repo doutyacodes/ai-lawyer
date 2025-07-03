@@ -158,7 +158,7 @@ const ResultsModal = ({ query, onClose }) => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         </div>
-                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Do's and Don'ts</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Do&apos;s and Don&apos;ts</h3>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ml-11 sm:ml-14">
                         {results.dos_and_donts.do && (
@@ -169,7 +169,7 @@ const ResultsModal = ({ query, onClose }) => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h4 className="text-sm sm:text-base font-semibold text-green-800">Do's</h4>
+                            <h4 className="text-sm sm:text-base font-semibold text-green-800">Do&apos;s</h4>
                             </div>
                             <div className="space-y-2">
                             {results.dos_and_donts.do.map((item, index) => (
@@ -189,7 +189,7 @@ const ResultsModal = ({ query, onClose }) => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </div>
-                            <h4 className="text-sm sm:text-base font-semibold text-red-800">Don'ts</h4>
+                            <h4 className="text-sm sm:text-base font-semibold text-red-800">Don&apos;ts</h4>
                             </div>
                             <div className="space-y-2">
                             {results.dos_and_donts.dont.map((item, index) => (
