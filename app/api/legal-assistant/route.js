@@ -214,7 +214,7 @@ This is not just about legal theory — the user may be confused or anxious. The
 **Incident Details:**
 - Country: ${country.name}
 - State: ${state.name}
-- Locality: ${locality}
+- Locality: ${locality || "Not specified"}
 - Place of Incident: ${incident_place || "Not specified"}
 - Legal Issue: "${problem}"
 - Date & Time of Event: ${dateTime || "Not specified"}
@@ -278,6 +278,30 @@ ${statusNote}
 "additional_advice": [
     "Tips like what documents to collect, how to talk to police, timelines, etc."
 ],
+"contact_help_resources": {
+  "description": "A short paragraph explaining who the user can contact for help based on their location, nationality, and issue.",
+  "contacts": [
+    {
+      "type": "Embassy or Consulate",
+      "name": "Name of embassy or consulate (if relevant)",
+      "website": "Official, working website",
+      "email": "Email if publicly available",
+      "phone": "International phone number",
+      "notes": "Operating hours or notes, if available"
+    },
+    {
+      "type": "Local Emergency Helpline",
+      "name": "Emergency authority or number (e.g., police, medical)",
+      "phone": "Valid emergency number",
+      "notes": "Languages supported or region"
+    },
+    {
+      "type": "Official Government Portal (if any)",
+      "name": "Service or portal name",
+      "website": "Working official link"
+    }
+  ]
+},
 "final_reassurance": "One last encouraging message — human, calm, and supportive.",
 "law_reference_source": "Mention which legal systems or acts were referenced — e.g., 'BNS, BNSS, Motor Vehicle Act (India)', etc."
 }
@@ -294,6 +318,31 @@ ${statusNote}
 - ⏳ Carefully apply the correct law set depending on **incident_date**.
 - 💡 Keep it helpful, real, and legally sound.
 - 🧩 Return "null" for any field you cannot answer confidently.
+
+🌐 For "contact_help_resources", follow this logic strictly:
+
+- 📍 If the **incident happened in the user's own country** (e.g., Indian citizen in India):
+  - ✅ Only return **local or regional help sources**:
+    - National emergency numbers (e.g., 112, 100, 1091)
+    - State legal aid boards, police portals, citizen grievance systems
+    - City or state helplines, if specific (e.g., Delhi Police)
+  - ❌ Do NOT include any embassy or consulate information.
+
+- 🌍 If the **incident occurred outside the user's country of nationality** (e.g., Indian in UAE):
+  - ✅ Return:
+    - The **user's home country embassy or consulate** in the foreign country
+    - Local emergency numbers of the country where the incident happened
+    - If available, official Indian portals like **MADAD** for cross-border legal or emergency assistance
+
+- ⚖️ If it's a **cross-border legal situation** (e.g., Indian arrested abroad or lost passport overseas):
+  - ✅ Prioritize verified contacts from **both countries involved** (home + foreign)
+  - ✅ Only include embassy contacts if they're **relevant to the case context**
+
+- 🔍 All contact details must be:
+  - Official (from government or legitimate authority)
+  - Verifiable (do NOT generate or assume websites, emails, or phone numbers)
+  - Mark missing fields as 'null' — **never invent anything**
+
 
 **Output only valid JSON. No markdown or extra text.**
 `;

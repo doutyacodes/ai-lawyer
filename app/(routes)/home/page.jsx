@@ -1258,6 +1258,83 @@ console.log("currentStep", currentStep)
                       </div>
                   )}
 
+                  {/* Contact Help Resources */}
+                  {results.contact_help_resources && results.contact_help_resources.contacts && results.contact_help_resources.contacts.length > 0 && (
+                      <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
+                      <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                          </div>
+                          <div className="flex-1">
+                          <h3 className="text-base sm:text-lg font-semibold text-gray-800">Emergency Contacts</h3>
+                          {results.contact_help_resources.description && (
+                              <p className="text-gray-600 text-sm mt-1 leading-relaxed">{results.contact_help_resources.description}</p>
+                          )}
+                          </div>
+                      </div>
+                      
+                      {/* Contacts Grid */}
+                      <div className="ml-11 sm:ml-14 space-y-3">
+                          {results.contact_help_resources.contacts.map((contact, index) => (
+                          <div key={index} className="bg-gray-50 hover:bg-gray-100 rounded-lg p-3 sm:p-4 border border-gray-200 transition-colors duration-200">
+                              <div className="flex items-start justify-between gap-2 sm:gap-4">
+                                  <div className="flex-1 min-w-0">
+                                      <div className="mb-1">
+                                          <h4 className="text-sm sm:text-base font-medium text-gray-800">{contact.name}</h4>
+                                      </div>
+                                      
+                                      <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm">
+                                          {contact.phone && (
+                                              <a href={`tel:${contact.phone}`} className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium">
+                                                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                  </svg>
+                                                  {contact.phone}
+                                              </a>
+                                          )}
+                                          
+                                          {contact.email && (
+                                              <a href={`mailto:${contact.email}`} className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium">
+                                                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                  </svg>
+                                                  Email
+                                              </a>
+                                          )}
+                                          
+                                          {contact.website && (
+                                              <a href={contact.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium">
+                                                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                  </svg>
+                                                  Website
+                                              </a>
+                                          )}
+                                      </div>
+                                      
+                                      {contact.notes && (
+                                          <p className="text-xs text-gray-500 mt-1 leading-relaxed">{contact.notes}</p>
+                                      )}
+                                  </div>
+                              </div>
+                          </div>
+                          ))}
+                      </div>
+                      
+                      {/* Disclaimer */}
+                      <div className="ml-11 sm:ml-14 mt-4 p-3 bg-amber-50 rounded-lg border-l-3 border-amber-400">
+                          <p className="text-amber-700 text-xs leading-relaxed">
+                              <svg className="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                              </svg>
+                              <strong>Note:</strong> Please verify contact details before use. Information may change without notice.
+                          </p>
+                      </div>
+                      </div>
+                  )}
+
                   {/* Additional Advice */}
                   {Array.isArray(results.additional_advice) && results.additional_advice.length > 0 && (
                       <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100">
