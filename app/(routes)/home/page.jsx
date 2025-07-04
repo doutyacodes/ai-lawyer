@@ -626,7 +626,7 @@ const EmergencyFields = ({ formData, handleInputChange, errors }) => (
           }}
           className={`p-4 rounded-xl border-2 transition-all duration-300 ${
             formData.isVehicleInvolved === false
-              ? 'border-gray-500 bg-gray-50 text-gray-700'
+              ? 'border-red-500 bg-red-50 text-red-700'
               : 'border-gray-200 hover:border-gray-300 bg-white'
           }`}
         >
