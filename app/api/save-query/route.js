@@ -30,18 +30,17 @@ export async function POST(req) {
         } = requestData;
 
         // Validate required fields
-        if (!country || !state || !locality || !age || !gender || !problem || !response_json) {
+        if (!country || !state || !age || !gender || !problem || !response_json) {
             return NextResponse.json(
                 { error: "Missing required fields" },
                 { status: 400 }
             );
         }
-
         // Save to database
         const [result] = await db.insert(LEGAL_QUERIES).values({
             user_id: userId,
-            country,
-            state,
+            country: country.name,
+            state: state.name,
             locality,
             incident_place: incident_place || null,
             age: parseInt(age),
