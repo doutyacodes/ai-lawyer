@@ -949,68 +949,64 @@ console.log("currentStep", currentStep)
     setCurrentStep('form');
   };
 
- // Emergency Detection Step - Always show first (unless we have results to display)
   if (currentStep === 'emergency-check' && currentStep !== 'results') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 flex items-center justify-center px-4 py-8">
-        <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 sm:p-8 md:p-12 border border-white/20 shadow-2xl max-w-2xl w-full text-center">
-          <div className="mb-6 sm:mb-8">
-            <div className="text-4xl sm:text-5xl mb-4 sm:mb-6">🚨</div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6">
-              Emergency Assessment
-            </h1>
-            <p className="text-gray-200 leading-relaxed text-base sm:text-lg mb-6 sm:mb-8 px-2">
-              Before we proceed, we need to understand the urgency of your situation to provide the most appropriate guidance.
-            </p>
-          </div>
-          
-          <div className="space-y-4 sm:space-y-6">
-            <button
-              onClick={() => handleEmergencySelection(true)}
-              className="w-full py-4 sm:py-6 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl hover:from-red-400 hover:to-red-500 transform hover:scale-105 transition-all duration-300 shadow-lg border-2 border-red-400/50"
-            >
-              <span className="flex items-center justify-center px-4">
-                <span className="mr-3 text-xl sm:text-2xl">🚨</span>
-                <div className="text-left">
-                  <div className="font-bold text-sm sm:text-base">YES - This is an Emergency</div>
-                  <div className="text-xs sm:text-sm text-red-100 mt-1">
-                    Immediate danger, injury, or time-sensitive legal issue
-                  </div>
-                </div>
-              </span>
-            </button>
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 flex items-center justify-center px-4 py-8">
+          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 sm:p-8 md:p-12 border border-white/20 shadow-2xl max-w-2xl w-full text-center">
+            <div className="mb-6 sm:mb-8">
+              <div className="text-4xl sm:text-5xl mb-4 sm:mb-6">🚨</div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6">
+                Emergency Assessment
+              </h1>
+              <p className="text-gray-200 leading-relaxed text-base sm:text-lg mb-6 sm:mb-8 px-2">
+                Before we proceed, we need to understand the urgency of your situation to provide the most appropriate guidance.
+              </p>
+            </div>
             
-            <button
-              onClick={() => handleEmergencySelection(false)}
-              className="w-full py-4 sm:py-6 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl hover:from-cyan-400 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-lg border-2 border-cyan-400/50"
-            >
-              <span className="flex items-center justify-center px-4">
-                <span className="mr-3 text-xl sm:text-2xl">📋</span>
-                <div className="text-left">
-                  <div className="font-bold text-sm sm:text-base">NO - General Legal Consultation</div>
-                  <div className="text-xs sm:text-sm text-cyan-100 mt-1">
-                    Non-urgent legal matter or general advice needed
+            <div className="space-y-4 sm:space-y-6">
+              <button
+                onClick={() => handleEmergencySelection(true)}
+                className="w-full py-4 sm:py-6 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl hover:from-red-400 hover:to-red-500 transform hover:scale-105 transition-all duration-300 shadow-lg border-2 border-red-400/50"
+              >
+                <span className="flex items-center justify-center px-4">
+                  <span className="mr-3 text-xl sm:text-2xl">🚨</span>
+                  <div className="text-left">
+                    <div className="font-bold text-sm sm:text-base">YES - This is an Emergency</div>
+                    <div className="text-xs sm:text-sm text-red-100 mt-1">
+                      Immediate danger, injury, or time-sensitive legal issue
+                    </div>
                   </div>
-                </div>
-              </span>
-            </button>
-          </div>
-          
-          <div className="mt-6 sm:mt-8 bg-yellow-500/20 border border-yellow-400/50 rounded-xl p-4 sm:p-6">
-            <p className="text-yellow-100 text-xs sm:text-sm">
+                </span>
+              </button>
+              
+              <button
+                onClick={() => handleEmergencySelection(false)}
+                className="w-full py-4 sm:py-6 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl hover:from-cyan-400 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-lg border-2 border-cyan-400/50"
+              >
+                <span className="flex items-center justify-center px-4">
+                  <span className="mr-3 text-xl sm:text-2xl">📋</span>
+                  <div className="text-left">
+                    <div className="font-bold text-sm sm:text-base">NO - General Legal Consultation</div>
+                    <div className="text-xs sm:text-sm text-cyan-100 mt-1">
+                      Non-urgent legal matter or general advice needed
+                    </div>
+                  </div>
+                </span>
+              </button>
+            </div>
+            
+            <p className="text-yellow-100 text-xs sm:text-sm mt-6 sm:mt-8">
               <span className="font-semibold">⚠️ If you&apos;re in immediate physical danger:</span><br/>
               Please contact emergency services (911, 112, or your local emergency number) first.
             </p>
+            
+            <p className="text-xs text-gray-400 mt-4 sm:mt-6 px-2">
+              Provides general legal information. Consult an attorney for complex matters.
+            </p>
           </div>
-          
-          <p className="text-xs text-gray-400 mt-4 sm:mt-6 px-2">
-            Provides general legal information. Consult an attorney for complex matters.
-          </p>
         </div>
-      </div>
-    );
-  }
-
+      );
+    }
   // Results page
   if (currentStep === 'results' && results) {
     return (
