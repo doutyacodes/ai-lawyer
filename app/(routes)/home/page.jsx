@@ -18,7 +18,7 @@ const PersonalInfoGrid = ({ formData, handleInputChange, errors, countries }) =>
           <select
             value={formData.nationality}
             onChange={(e) => handleInputChange('nationality', e.target.value)}
-            className={`w-full px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
+            className={`w-full mt-2 px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
               errors.nationality ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
             }`}
             placeholder="Your nationality"
@@ -72,7 +72,7 @@ const PersonalInfoGrid = ({ formData, handleInputChange, errors, countries }) =>
           <select
             value={formData.gender}
             onChange={(e) => handleInputChange('gender', e.target.value)}
-            className={`w-full px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
+            className={`w-full mt-2 px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
               errors.gender ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
             }`}
             style={{
