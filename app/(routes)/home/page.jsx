@@ -365,7 +365,7 @@ const LocationInfoGrid = ({ formData, handleInputChange, handleCountryChange, ha
       {isNotInHomeCountry && (
         <div className="mt-6 p-4 lg:p-6 bg-blue-50 rounded-xl lg:rounded-2xl border border-blue-200">
           <h3>Your reason for being in {formData.country.name}</h3>
-          <p className="text-sm text-blue-700 mb-4" >You're currently in a different country. Let us know your purpose of stay (e.g. tourist, work, study).</p>  
+          <p className="text-sm text-blue-700 mb-4" >You&apos;re currently in a different country. Let us know your purpose of stay (e.g. tourist, work, study).</p>  
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
             {statusOptions.map((option) => (
               <label
@@ -486,7 +486,7 @@ const ReportingForComponent = ({ formData, handleInputChange, errors }) => {
             </div>
             <div>
               <span className="text-base lg:text-lg font-semibold">For Someone Else</span>
-              <p className="text-sm text-gray-600 mt-1">This is about another person's legal issue</p>
+              <p className="text-sm text-gray-600 mt-1">This is about another person&apos;s legal issue</p>
             </div>
           </label>
         </div>
@@ -500,7 +500,7 @@ const ReportingForComponent = ({ formData, handleInputChange, errors }) => {
               <div>
                 <h4 className="font-semibold text-amber-800 mb-2">Important Notice</h4>
                 <p className="text-sm text-amber-700">
-                  Since you're reporting for someone else, please ensure that:
+                  Since you&apos;re reporting for someone else, please ensure that:
                 </p>
                 <ul className="text-sm text-amber-700 mt-2 space-y-1">
                   <li>• All personal details you provide should be about <strong>that person</strong>, not yourself</li>
