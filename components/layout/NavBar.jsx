@@ -210,13 +210,13 @@ export default function NavBar() {
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={handleLogout}
+                    {/* <button
+                      // onClick={handleLogout}
                       className="w-full flex items-center space-x-3 px-4 py-3 text-left rounded-xl hover:bg-red-500/20 transition-colors duration-200 text-red-300"
                     >
                       <LogOut size={18} />
                       <span className="font-medium">Sign Out</span>
-                    </button>
+                    </button> */}
                   </div>
                 ) : (
                   <div className="space-y-3">
