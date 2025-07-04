@@ -25,7 +25,7 @@ const PersonalInfoGrid = ({ formData, handleInputChange, errors, countries }) =>
           >
             <option value="">Select country</option>
             {countries.map((nationality) => (
-              <option key={nationality.isoCode} value={nationality.name}>
+              <option key={nationality.isoCode} value={nationality.isoCode}>
                 {nationality.name}
               </option>
             ))}
@@ -113,410 +113,116 @@ const PersonalInfoGrid = ({ formData, handleInputChange, errors, countries }) =>
   );
 };
 
-const DateTimeInfo = ({ formData, handleInputChange, errors }) => {
-  const timeOptions = [
-    { value: 'just_now', label: 'Just now', selected: true },
-    { value: 'within_hour', label: 'Within the last hour' },
-    { value: 'within_24_hours', label: 'Within the last 24 hours' },
-    { value: 'earlier_week', label: 'Earlier this week' },
-    { value: 'other', label: 'Other (specify date)' }
-  ];
-
-  const handleTimeOptionChange = (value) => {
-    const now = new Date();
-    let dateTime = '';
-    
-    switch(value) {
-      case 'just_now':
-        dateTime = now.toISOString();
-        break;
-      case 'within_hour':
-        dateTime = new Date(now.getTime() - 30 * 60000).toISOString(); // 30 mins ago
-        break;
-      case 'within_24_hours':
-        dateTime = new Date(now.getTime() - 12 * 3600000).toISOString(); // 12 hours ago
-        break;
-      case 'earlier_week':
-        dateTime = new Date(now.getTime() - 3 * 24 * 3600000).toISOString(); // 3 days ago
-        break;
-      case 'other':
-        dateTime = 'custom';
-        break;
-      default:
-        dateTime = now.toISOString();
-    }
-    
-    handleInputChange('timeOption', value);
-    if (value !== 'other') {
-      handleInputChange('dateTime', dateTime);
-    }
-  };
-
+const LocationInfoGrid = ({ formData, handleInputChange, errors, countries, states }) => {
   return (
-    <>
-      <div className="flex items-center mb-6 lg:mb-8">
-        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-red-500 to-orange-600 rounded-full flex items-center justify-center mr-3 lg:mr-4">
-          <span className="text-white text-lg lg:text-xl">⏰</span>
-        </div>
-        <div>
-          <h2 className="text-xl lg:text-2xl font-bold text-gray-800">When did this happen?</h2>
-          <p className="text-sm lg:text-base text-gray-600">Time of the incident</p>
-        </div>
-      </div>
-      
-      <div className="mb-8 lg:mb-12">
-        <div className="space-y-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
-            When did this occur? *
-          </label>
-          
-          {/* Time Options Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {timeOptions.map((option) => (
-              <label
-                key={option.value}
-                className={`flex items-center p-3 lg:p-4 rounded-xl lg:rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
-                  formData.timeOption === option.value
-                    ? 'border-red-500 bg-red-50 text-red-700'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="timeOption"
-                  value={option.value}
-                  checked={formData.timeOption === option.value}
-                  onChange={(e) => handleTimeOptionChange(e.target.value)}
-                  className="sr-only"
-                />
-                <div className={`w-4 h-4 lg:w-5 lg:h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
-                  formData.timeOption === option.value
-                    ? 'border-red-500 bg-red-500'
-                    : 'border-gray-300'
-                }`}>
-                  {formData.timeOption === option.value && (
-                    <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 bg-white rounded-full"></div>
-                  )}
-                </div>
-                <span className="text-sm lg:text-base font-medium">{option.label}</span>
-              </label>
-            ))}
-          </div>
-          
-          {/* Custom Date Picker - Show only when "Other" is selected */}
-          {formData.timeOption === 'other' && (
-            <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Select Date
-              </label>
-              <input
-                type="date"
-                value={formData.customDate || ''}
-                onChange={(e) => {
-                  const selectedDate = new Date(e.target.value);
-                  handleInputChange('customDate', e.target.value);
-                  handleInputChange('dateTime', selectedDate.toISOString());
-                }}
-                className={`w-full max-w-md px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 ${
-                  errors.dateTime ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
-                }`}
-              />
-            </div>
-          )}
-          
-          {errors.dateTime && (
-            <p className="text-red-500 text-sm mt-2 flex items-center">
-              <span className="mr-1">⚠️</span>
-              {errors.dateTime}
-            </p>
-          )}
-        </div>
-      </div>
-    </>
-  );
-};
-
-const LocationInfoGrid = ({ formData, handleInputChange, handleCountryChange, handleStateChange, errors, countries, states }) => {
-  // Check if person is not in their home country
-  const isNotInHomeCountry = formData.nationality && formData.country.name && 
-    formData.nationality !== formData.country.name;
-
-  const statusOptions = [
-    { value: 'tourist', label: 'Tourist' },
-    { value: 'expat', label: 'Expatriate' },
-    { value: 'student', label: 'Student' },
-    { value: 'other', label: 'Other' }
-  ];
-
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
-        {/* Country */}
-        <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
-            Country *
-          </label>
-          <div className="relative">
-            <select
-              value={formData.country.isoCode}
-              onChange={handleCountryChange}
-              className={`w-full px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
-                errors.country ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
-              }`}
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 0.75rem center',
-                backgroundSize: '16px'
-              }}
-            >
-              <option value="">Select country</option>
-              {countries.map((country) => (
-                <option key={country.isoCode} value={country.isoCode}>
-                  {country.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          {errors.country && (
-            <p className="text-red-500 text-sm mt-2 flex items-center">
-              <span className="mr-1">⚠️</span>
-              {errors.country}
-            </p>
-          )}
-        </div>
-
-        {/* State */}
-        <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
-            State/Province *
-          </label>
-          <div className="relative">
-            <select
-              value={formData.state.isoCode}
-              onChange={handleStateChange}
-              disabled={!formData.country.isoCode}
-              className={`w-full px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
-                !formData.country ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''
-              } ${
-                errors.state ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
-              }`}
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 0.75rem center',
-                backgroundSize: '16px'
-              }}
-            >
-                <option value="">Select State/Province</option>
-                {states.map((state) => (
-                  <option key={state.isoCode} value={state.isoCode}>
-                    {state.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-          {errors.state && (
-            <p className="text-red-500 text-sm mt-2 flex items-center">
-              <span className="mr-1">⚠️</span>
-              {errors.state}
-            </p>
-          )}
-        </div>
-
-        {/* Locality - NOW OPTIONAL */}
-        <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
-            City/Locality
-          </label>
-          <input
-            type="text"
-            value={formData.locality}
-            onChange={(e) => handleInputChange('locality', e.target.value)}
-            className={`w-full px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
-              errors.locality ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
+      {/* Country */}
+      <div className="space-y-2">
+        <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
+          Country *
+        </label>
+        <div className="relative">
+          <select
+            value={formData.country}
+            onChange={(e) => handleInputChange('country', e.target.value)}
+            className={`w-full px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
+              errors.country ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
             }`}
-            placeholder="City or locality (optional)"
-          />
-          {errors.locality && (
-            <p className="text-red-500 text-sm mt-2 flex items-center">
-              <span className="mr-1">⚠️</span>
-              {errors.locality}
-            </p>
-          )}
-        </div>
-
-        {/* Incident Place */}
-        <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
-            Specific Location (Optional)
-          </label>
-          <input
-            type="text"
-            value={formData.incident_place}
-            onChange={(e) => handleInputChange('incident_place', e.target.value)}
-            className="w-full px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 border-gray-200 hover:border-gray-300"
-            placeholder="e.g., apartment, workplace, college, neighborhood, etc."
-          />
-        </div>
-      </div>
-
-      {/* Status in Country - Show only if not in home country */}
-      {isNotInHomeCountry && (
-        <div className="mt-6 p-4 lg:p-6 bg-blue-50 rounded-xl lg:rounded-2xl border border-blue-200">
-          <h3>Your reason for being in {formData.country.name}</h3>
-          <p className="text-sm text-blue-700 mb-4" >You're currently in a different country. Let us know your purpose of stay (e.g. tourist, work, study).</p>  
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-            {statusOptions.map((option) => (
-              <label
-                key={option.value}
-                className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
-                  formData.statusInCountry === option.value
-                    ? 'border-blue-500 bg-blue-100 text-blue-700'
-                    : 'border-blue-200 hover:border-blue-300 bg-white'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="statusInCountry"
-                  value={option.value}
-                  checked={formData.statusInCountry === option.value}
-                  onChange={(e) => handleInputChange('statusInCountry', e.target.value)}
-                  className="sr-only"
-                />
-                <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
-                  formData.statusInCountry === option.value
-                    ? 'border-blue-500 bg-blue-500'
-                    : 'border-blue-300'
-                }`}>
-                  {formData.statusInCountry === option.value && (
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  )}
-                </div>
-                <span className="text-sm font-medium">{option.label}</span>
-              </label>
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 0.75rem center',
+              backgroundSize: '16px'
+            }}
+          >
+            <option value="">Select country</option>
+            {countries.map((country) => (
+              <option key={country.isoCode} value={country.isoCode}>
+                {country.name}
+              </option>
             ))}
-          </div>
-          
-          {formData.statusInCountry.startsWith('other') && (
-            <div className="mt-3">
-              <input
-                type="text"
-                value={formData.statusInCountry.startsWith('other:') ? formData.statusInCountry.slice(6) : ''}
-                onChange={(e) => handleInputChange('statusInCountry', `other:${e.target.value.slice(0, 20)}`)}
-                className="w-full px-4 py-3 bg-white border-2 rounded-lg text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 border-blue-200 hover:border-blue-300"
-                placeholder="Please specify (max 20 characters)"
-                maxLength={20}
-              />
-              <p className="text-xs text-blue-600 mt-1">
-                {(formData.statusInCountry.startsWith('other:') ? formData.statusInCountry.slice(6).length : 0)}/20 characters
-              </p>
-            </div>
-          )}
+          </select>
         </div>
-      )}
-    </div>
-  );
-};
-
-const ReportingForComponent = ({ formData, handleInputChange, errors }) => {
-  return (
-    <div className="mb-8 lg:mb-12">
-      <div className="flex items-center mb-6 lg:mb-8">
-        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mr-3 lg:mr-4">
-          <span className="text-white text-lg lg:text-xl">👤</span>
-        </div>
-        <div>
-          <h2 className="text-xl lg:text-2xl font-bold text-gray-800">Who is this report for?</h2>
-          <p className="text-sm lg:text-base text-gray-600">Please specify who this legal issue concerns</p>
-        </div>
-      </div>
-      
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <label className={`flex items-center p-4 lg:p-6 rounded-xl lg:rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
-            formData.reportingFor === 'myself'
-              ? 'border-purple-500 bg-purple-50 text-purple-700'
-              : 'border-gray-200 hover:border-gray-300 bg-white'
-          }`}>
-            <input
-              type="radio"
-              name="reportingFor"
-              value="myself"
-              checked={formData.reportingFor === 'myself'}
-              onChange={(e) => handleInputChange('reportingFor', e.target.value)}
-              className="sr-only"
-            />
-            <div className={`w-5 h-5 lg:w-6 lg:h-6 rounded-full border-2 mr-3 lg:mr-4 flex items-center justify-center ${
-              formData.reportingFor === 'myself'
-                ? 'border-purple-500 bg-purple-500'
-                : 'border-gray-300'
-            }`}>
-              {formData.reportingFor === 'myself' && (
-                <div className="w-2.5 h-2.5 lg:w-3 lg:h-3 bg-white rounded-full"></div>
-              )}
-            </div>
-            <div>
-              <span className="text-base lg:text-lg font-semibold">For Myself</span>
-              <p className="text-sm text-gray-600 mt-1">This legal issue concerns me personally</p>
-            </div>
-          </label>
-          
-          <label className={`flex items-center p-4 lg:p-6 rounded-xl lg:rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
-            formData.reportingFor === 'someone_else'
-              ? 'border-purple-500 bg-purple-50 text-purple-700'
-              : 'border-gray-200 hover:border-gray-300 bg-white'
-          }`}>
-            <input
-              type="radio"
-              name="reportingFor"
-              value="someone_else"
-              checked={formData.reportingFor === 'someone_else'}
-              onChange={(e) => handleInputChange('reportingFor', e.target.value)}
-              className="sr-only"
-            />
-            <div className={`w-5 h-5 lg:w-6 lg:h-6 rounded-full border-2 mr-3 lg:mr-4 flex items-center justify-center ${
-              formData.reportingFor === 'someone_else'
-                ? 'border-purple-500 bg-purple-500'
-                : 'border-gray-300'
-            }`}>
-              {formData.reportingFor === 'someone_else' && (
-                <div className="w-2.5 h-2.5 lg:w-3 lg:h-3 bg-white rounded-full"></div>
-              )}
-            </div>
-            <div>
-              <span className="text-base lg:text-lg font-semibold">For Someone Else</span>
-              <p className="text-sm text-gray-600 mt-1">This is about another person's legal issue</p>
-            </div>
-          </label>
-        </div>
-        
-        {formData.reportingFor === 'someone_else' && (
-          <div className="mt-4 p-4 lg:p-6 bg-amber-50 rounded-xl lg:rounded-2xl border border-amber-200">
-            <div className="flex items-start">
-              <div className="w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center mr-3 mt-0.5">
-                <span className="text-white text-sm">⚠️</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-amber-800 mb-2">Important Notice</h4>
-                <p className="text-sm text-amber-700">
-                  Since you're reporting for someone else, please ensure that:
-                </p>
-                <ul className="text-sm text-amber-700 mt-2 space-y-1">
-                  <li>• All personal details you provide should be about <strong>that person</strong>, not yourself</li>
-                  <li>• All information relates to <strong>their situation</strong> only</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {errors.reportingFor && (
+        {errors.country && (
           <p className="text-red-500 text-sm mt-2 flex items-center">
             <span className="mr-1">⚠️</span>
-            {errors.reportingFor}
+            {errors.country}
           </p>
         )}
+      </div>
+
+      {/* State */}
+      <div className="space-y-2">
+        <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
+          State/Province *
+        </label>
+        <div className="relative">
+          <select
+            value={formData.state}
+            onChange={(e) => handleInputChange('state', e.target.value)}
+            disabled={!formData.country}
+            className={`w-full px-4 py-3 lg:px-6 lg:py-4 pr-10 lg:pr-12 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 appearance-none ${
+              !formData.country ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''
+            } ${
+              errors.state ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
+            }`}
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 0.75rem center',
+              backgroundSize: '16px'
+            }}
+          >
+            <option value="">Select State/Province</option>
+            {states.map((state) => (
+              <option key={state.isoCode} value={state.isoCode}>
+                {state.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        {errors.state && (
+          <p className="text-red-500 text-sm mt-2 flex items-center">
+            <span className="mr-1">⚠️</span>
+            {errors.state}
+          </p>
+        )}
+      </div>
+
+      {/* Locality */}
+      <div className="space-y-2">
+        <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
+          City/Locality *
+        </label>
+        <input
+          type="text"
+          value={formData.locality}
+          onChange={(e) => handleInputChange('locality', e.target.value)}
+          className={`w-full px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
+            errors.locality ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
+          }`}
+          placeholder="City or locality"
+        />
+        {errors.locality && (
+          <p className="text-red-500 text-sm mt-2 flex items-center">
+            <span className="mr-1">⚠️</span>
+            {errors.locality}
+          </p>
+        )}
+      </div>
+
+      {/* Incident Place */}
+      <div className="space-y-2">
+        <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
+          Specific Location (Optional)
+        </label>
+        <input
+          type="text"
+          value={formData.incident_place}
+          onChange={(e) => handleInputChange('incident_place', e.target.value)}
+          className="w-full px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 border-gray-200 hover:border-gray-300"
+          placeholder="e.g., apartment, workplace, college, neighborhood, etc."
+        />
       </div>
     </div>
   );
@@ -647,7 +353,6 @@ const EmergencyFields = ({ formData, handleInputChange, errors }) => (
   </>
 );
 
-
 export default function LegalAssistantPage() {
   // Form states
   const [formData, setFormData] = useState({
@@ -665,23 +370,13 @@ export default function LegalAssistantPage() {
     age: '',
     gender: '',
     religion: '',
-    country: {
-      isoCode: '',
-      name: '',
-    },
-    state: {
-      isoCode: '',
-      name: '',
-    },
+    country: '',
+    state: '',
     locality: '',
     incident_place: '',
-    problem: '',
-
-    reportingFor: '', // 'myself' or 'someone_else'
-    timeOption: 'just_now', // Default to 'just_now'
-    customDate: '', // For when 'other' is selected
-    statusInCountry: '', // 'tourist', 'expat', 'student', or 'other:custom_text'
+    problem: ''
   });
+
   // UI states
   const [currentStep, setCurrentStep] = useState('emergency-check'); // 'emergency-check' or 'form' or 'results'
   const [loading, setLoading] = useState(false);
@@ -689,9 +384,18 @@ export default function LegalAssistantPage() {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [errors, setErrors] = useState({});
+  const [showIntro, setShowIntro] = useState(null); // null = checking, true = show, false = don't show
+  const [hasVisitedBefore, setHasVisitedBefore] = useState(false);
 console.log("currentStep", currentStep)
   // Load form data and results from storage on mount
   useEffect(() => {
+    // Check if user has visited before
+    const visitedBefore = formStorage.load('has_visited');
+    setHasVisitedBefore(!!visitedBefore);
+    
+    // Set showIntro based on previous visit
+    setShowIntro(!visitedBefore);
+    
     // Load saved results first (priority over form data)
     const savedResults = formStorage.load('results_data');
     if (savedResults) {
@@ -700,10 +404,10 @@ console.log("currentStep", currentStep)
     }
     
     // Load form data
-    // const savedData = formStorage.load('form_data');
-    // if (savedData) {
-    //   setFormData(savedData);
-    // }
+    const savedData = formStorage.load('form_data');
+    if (savedData) {
+      setFormData(savedData);
+    }
     
     // Load countries
     setCountries(Country.getAllCountries());
@@ -711,18 +415,20 @@ console.log("currentStep", currentStep)
 
   // Load states when country changes
   useEffect(() => {
-    if (formData.country.isoCode) {
-      const countryStates = State.getStatesOfCountry(formData.country.isoCode);
+    if (formData.country) {
+      const countryStates = State.getStatesOfCountry(formData.country);
       setStates(countryStates);
     } else {
       setStates([]);
     }
-  }, [formData.country.isoCode]);
+  }, [formData.country]);
 
   // Save form data to storage whenever it changes (only if not showing intro)
-  // useEffect(() => {
-  //     formStorage.save('form_data', formData);
-  // }, [formData]);
+  useEffect(() => {
+    if (showIntro === false) {
+      formStorage.save('form_data', formData);
+    }
+  }, [formData, showIntro]);
 
   const handleEmergencySelection = (value) => {
     handleInputChange('isEmergency', value);
@@ -742,41 +448,6 @@ console.log("currentStep", currentStep)
         [field]: ''
       }));
     }
-    
-    // Special handling for country change - reset state when country changes
-    if (field === 'country') {
-      setFormData(prev => ({
-        ...prev,
-        state: ''
-      }));
-    }
-  };
-
-  const handleCountryChange = (e) => {
-    const selectedIso = e.target.value;
-    const selectedCountry = countries.find(c => c.isoCode === selectedIso);
-
-    setFormData(prev => ({
-      ...prev,
-      country: {
-        isoCode: selectedIso,
-        name: selectedCountry?.name || '',
-      },
-      state: { isoCode: '', name: '' } // Reset state on country change
-    }));
-  };
-
-  const handleStateChange = (e) => {
-    const selectedIso = e.target.value;
-    const selectedState = states.find(s => s.isoCode === selectedIso);
-
-    setFormData(prev => ({
-      ...prev,
-      state: {
-        isoCode: selectedIso,
-        name: selectedState?.name || '',
-      },
-    }));
   };
 
   const validateForm = () => {
@@ -792,8 +463,7 @@ console.log("currentStep", currentStep)
     // Incident Location
     if (!formData.country) newErrors.country = 'Country is required';
     if (!formData.state) newErrors.state = 'State is required';
-
-    if (!formData.reportingFor) newErrors.reportingFor = 'Please specify who this report is for';
+    if (!formData.locality.trim()) newErrors.locality = 'Locality is required';
     
     // Problem description
     if (!formData.problem.trim()) {
@@ -804,10 +474,7 @@ console.log("currentStep", currentStep)
     
     // Emergency-specific validations
     if (formData.isEmergency) {
-      if (!formData.dateTime || (formData.timeOption === 'other' && !formData.customDate)) {
-        newErrors.dateTime = 'Please specify when the incident occurred';
-      }
-      // if (!formData.dateTime) newErrors.dateTime = 'Date and time are required for emergency cases';
+      if (!formData.dateTime) newErrors.dateTime = 'Date and time are required for emergency cases';
       if (formData.isInjuredOrThreatened === null) {
         newErrors.isInjuredOrThreatened = 'Please indicate if you are injured or threatened';
       }
@@ -922,25 +589,11 @@ console.log("currentStep", currentStep)
       age: '',
       gender: '',
       religion: '',
-      country: {
-        isoCode: '',
-        name: '',
-      },
-      state: {
-        isoCode: '',
-        name: '',
-      },
+      country: '',
+      state: '',
       locality: '',
       incident_place: '',
-      problem: '',
-       // Add these to your existing formData state
-      reportingFor: '', // 'myself' or 'someone_else'
-      timeOption: 'just_now', // Default to 'just_now'
-      customDate: '', // For when 'other' is selected
-      statusInCountry: '', // 'tourist', 'expat', 'student', 'other'
-      statusInCountryOther: '', // Custom status if 'other' is selected
-      countryCode: '', // Store country ISO code separately
-      stateCode: '', // Store state ISO code separately
+      problem: ''
     });
     formStorage.clear('form_data');
     formStorage.clear('results_data');
@@ -948,6 +601,88 @@ console.log("currentStep", currentStep)
     setResults(null);
     setCurrentStep('form');
   };
+
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+    // Mark that user has visited before
+    formStorage.save('has_visited', true);
+  };
+
+  const DateTImeInfo = () => {
+    return (
+      <>
+      <div className="flex items-center mb-6 lg:mb-8">
+        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-red-500 to-orange-600 rounded-full flex items-center justify-center mr-3 lg:mr-4">
+          <span className="text-white text-lg lg:text-xl">⏰</span>
+        </div>
+        <div>
+          <h2 className="text-xl lg:text-2xl font-bold text-gray-800">When did this happen?</h2>
+          <p className="text-sm lg:text-base text-gray-600">Date and time of the incident</p>
+        </div>
+      </div>
+      <div className="mb-8 lg:mb-12">
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
+            Date and Time *
+          </label>
+          <input
+            type="datetime-local"
+            value={formData.dateTime}
+            onChange={(e) => handleInputChange('dateTime', e.target.value)}
+            className={`w-full px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 ${
+              errors.dateTime ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
+            }`}
+          />
+          {errors.dateTime && (
+            <p className="text-red-500 text-sm mt-2 flex items-center">
+              <span className="mr-1">⚠️</span>
+              {errors.dateTime}
+            </p>
+          )}
+        </div>
+      </div>
+      </>
+    );
+  };
+
+  // Show loading state while checking intro status
+  if (showIntro === null) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
+        <LoadingOverlay />
+      </div>
+    );
+  }
+
+  // Show intro only for first-time visitors
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 flex items-center justify-center px-4">
+        <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 sm:p-12 border border-white/20 shadow-2xl max-w-lg w-full text-center">
+          <div className="mb-6">
+            <div className="text-4xl mb-4">⚖️</div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Legal Assistant AI
+            </h1>
+            <p className="text-gray-200 leading-relaxed">
+              Get personalized legal guidance. Share your location and situation to receive tailored advice.
+            </p>
+          </div>
+          
+          <button
+            onClick={handleIntroComplete}
+            className="w-full py-4 text-lg font-semibold text-white bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl hover:from-cyan-400 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-lg"
+          >
+            Get Started
+          </button>
+          
+          <p className="text-xs text-gray-400 mt-6">
+            Provides general legal information. Consult an attorney for complex matters.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
  // Emergency Detection Step - Always show first (unless we have results to display)
   if (currentStep === 'emergency-check' && currentStep !== 'results') {
@@ -1339,7 +1074,7 @@ console.log("currentStep", currentStep)
                       <span className="text-3xl">🚨</span>
                     </div>
                     <div>
-                      <p className="font-bold text-red-800 mb-1">Emergency Mode</p>
+                      <p className="font-bold text-red-800 mb-1">Emergency Mode Activated</p>
                       <p className="text-red-700 text-sm">
                         We&apos;re prioritizing your emergency. If you&apos;re in immediate danger, please contact emergency services first.
                       </p>
@@ -1347,12 +1082,6 @@ console.log("currentStep", currentStep)
                   </div>
                 </div>
               )}
-
-              <ReportingForComponent 
-                formData={formData}
-                handleInputChange={handleInputChange}
-                errors={errors}
-              />
 
               {/* Conditional Form Rendering Based on Emergency Status */}
               {formData.isEmergency ? (
@@ -1411,11 +1140,7 @@ console.log("currentStep", currentStep)
                   </div>
 
                   <div className="mb-8 lg:mb-12">
-                    <DateTimeInfo
-                      formData={formData}
-                      handleInputChange={handleInputChange}
-                      errors={errors}
-                    />
+                      <DateTImeInfo />
                   </div>
 
                   {/* Incident Location */}
@@ -1429,11 +1154,9 @@ console.log("currentStep", currentStep)
                         <p className="text-sm lg:text-base text-gray-600">Where did this emergency occur?</p>
                       </div>
                     </div>
-                    <LocationInfoGrid 
+                     <LocationInfoGrid 
                       formData={formData}
                       handleInputChange={handleInputChange}
-                      handleCountryChange={handleCountryChange}
-                      handleStateChange={handleStateChange}
                       errors={errors}
                       countries={countries}
                       states={states}
@@ -1471,11 +1194,7 @@ console.log("currentStep", currentStep)
                   </div>
 
                   <div className="mb-8 lg:mb-12">
-                    <DateTimeInfo
-                      formData={formData}
-                      handleInputChange={handleInputChange}
-                      errors={errors}
-                    />
+                      <DateTImeInfo />
                   </div>
 
                   {/* Incident Location */}
@@ -1492,8 +1211,6 @@ console.log("currentStep", currentStep)
                     <LocationInfoGrid 
                       formData={formData}
                       handleInputChange={handleInputChange}
-                      handleCountryChange={handleCountryChange}
-                      handleStateChange={handleStateChange}
                       errors={errors}
                       countries={countries}
                       states={states}

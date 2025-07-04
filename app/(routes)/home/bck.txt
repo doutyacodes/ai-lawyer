@@ -120,3 +120,12 @@
       //     </div>
       //   </div>
       // </div>
+
+      citly/or location not optional
+
+      TOurrist , Ex-pat, student , others  space to input {20 characters}
+
+      Just now (selected by default), Withinthe last hour, with inth elast 24 hour, Earlier Week, other (last option the date only picker )
+
+      Remove box inthe  emergency or non emergency
+
