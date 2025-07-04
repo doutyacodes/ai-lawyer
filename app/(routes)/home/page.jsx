@@ -364,8 +364,17 @@ const LocationInfoGrid = ({ formData, handleInputChange, handleCountryChange, ha
       {/* Status in Country - Show only if not in home country */}
       {isNotInHomeCountry && (
         <div className="mt-6 p-4 lg:p-6 bg-blue-50 rounded-xl lg:rounded-2xl border border-blue-200">
-          <h3>Your reason for being in {formData.country.name}</h3>
-          <p className="text-sm text-blue-700 mb-4" >You&apos;re currently in a different country. Let us know your purpose of stay (e.g. tourist, work, study).</p>  
+          <h3>
+            {formData.reportingFor === 'someone_else'
+              ? `Their reason for being in ${formData.country.name}`
+              : `Your reason for being in ${formData.country.name}`}
+          </h3>
+          <p className="text-sm text-blue-700 mb-4">
+            {formData.reportingFor === 'someone_else'
+              ? "They are currently in a different country. Let us know their purpose of stay (e.g. tourist, work, study)."
+              : "You're currently in a different country. Let us know your purpose of stay (e.g. tourist, work, study)."}
+          </p>  
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
             {statusOptions.map((option) => (
               <label
@@ -397,7 +406,7 @@ const LocationInfoGrid = ({ formData, handleInputChange, handleCountryChange, ha
               </label>
             ))}
           </div>
-          
+
           {formData.statusInCountry.startsWith('other') && (
             <div className="mt-3">
               <input
@@ -531,8 +540,14 @@ const EmergencyFields = ({ formData, handleInputChange, errors }) => (
           <span className="text-white text-lg lg:text-xl">🩹</span>
         </div>
         <div>
-          <h2 className="text-xl lg:text-2xl font-bold text-gray-800">Safety Status</h2>
-          <p className="text-sm lg:text-base text-gray-600">Are you injured or currently threatened?</p>
+          <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
+            {formData.reportingFor === 'someone_else' ? 'Their Safety Status' : 'Your Safety Status'}
+          </h2>
+          <p className="text-sm lg:text-base text-gray-600">
+            {formData.reportingFor === 'someone_else'
+              ? 'Are they injured or currently threatened?'
+              : 'Are you injured or currently threatened?'}
+          </p>
         </div>
       </div>
       
@@ -1372,7 +1387,7 @@ console.log("currentStep", currentStep)
                 </div>
             </div>
             </div>
-            {loading && <LoadingOverlay message="Saving your legal advice..." />}
+          {loading && <LoadingOverlay message="Saving your information..." />}
         </div>
     );
   }
@@ -1394,10 +1409,10 @@ console.log("currentStep", currentStep)
               ⚖️ AI Legal Assistant
             </div>
             <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              Legal Consultation Form
+              Get Help with Your Situation
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Provide your details to receive personalized legal guidance tailored to your jurisdiction
+              Share your details to get AI-powered guidance based on your situation and location.
             </p>
           </div>
 
@@ -1414,7 +1429,9 @@ console.log("currentStep", currentStep)
                     <div>
                       <p className="font-bold text-red-800 mb-1">Emergency Mode</p>
                       <p className="text-red-700 text-sm">
-                        We&apos;re prioritizing your emergency. If you&apos;re in immediate danger, please contact emergency services first.
+                        {formData.reportingFor === 'someone_else'
+                          ? "We're prioritizing their emergency. If they are in immediate danger, please contact emergency services first."
+                          : "We're prioritizing your emergency. If you're in immediate danger, please contact emergency services first."}
                       </p>
                     </div>
                   </div>
@@ -1437,14 +1454,22 @@ console.log("currentStep", currentStep)
                         <span className="text-white text-lg lg:text-xl">📋</span>
                       </div>
                       <div>
-                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">What&apos;s the Emergency?</h2>
-                        <p className="text-sm lg:text-base text-gray-600">Describe your urgent legal issue</p>
+                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
+                          {formData.reportingFor === 'someone_else' ? "What's Their Emergency?" : "What's the Emergency?"}
+                        </h2>
+                        <p className="text-sm lg:text-base text-gray-600">
+                          {formData.reportingFor === 'someone_else'
+                            ? "Describe their urgent legal issue"
+                            : "Describe your urgent legal issue"}
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
-                        Describe your emergency legal problem *
+                        {formData.reportingFor === 'someone_else'
+                          ? "Describe their emergency legal problem *"
+                          : "Describe your emergency legal problem *"}
                       </label>
                       <textarea
                         value={formData.problem}
@@ -1453,7 +1478,11 @@ console.log("currentStep", currentStep)
                           errors.problem ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
                         }`}
                         rows={5}
-                        placeholder="Please describe your emergency situation in detail. Include what happened, when, and what immediate help you need."
+                        placeholder={
+                          formData.reportingFor === 'someone_else'
+                            ? "Please describe their emergency situation in detail. Include what happened, when, and what help they need."
+                            : "Please describe your emergency situation in detail. Include what happened, when, and what immediate help you need."
+                        }
                       />
                       {errors.problem && (
                         <p className="text-red-500 text-sm mt-2 flex items-center">
@@ -1464,24 +1493,31 @@ console.log("currentStep", currentStep)
                     </div>
                   </div>
 
-                  {/* Personal Information */}
-                  <div className="mb-8 lg:mb-12">
-                    <div className="flex items-center mb-6 lg:mb-8">
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mr-3 lg:mr-4">
-                        <span className="text-white text-lg lg:text-xl">👤</span>
-                      </div>
-                      <div>
-                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">Personal Information</h2>
-                        <p className="text-sm lg:text-base text-gray-600">Tell us about yourself</p>
-                      </div>
+                {/* Personal Information */}
+                <div className="mb-8 lg:mb-12">
+                  <div className="flex items-center mb-6 lg:mb-8">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mr-3 lg:mr-4">
+                      <span className="text-white text-lg lg:text-xl">👤</span>
                     </div>
-                    <PersonalInfoGrid 
-                      formData={formData}
-                      handleInputChange={handleInputChange}
-                      errors={errors}
-                      countries={countries}
-                    />
+                    <div>
+                      <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
+                        {formData.reportingFor === 'someone_else' ? 'Their Personal Information' : 'Your Personal Information'}
+                      </h2>
+                      <p className="text-sm lg:text-base text-gray-600">
+                        {formData.reportingFor === 'someone_else'
+                          ? 'Please tell us about the person you are reporting for'
+                          : 'Tell us about yourself'}
+                      </p>
+                    </div>
                   </div>
+
+                  <PersonalInfoGrid 
+                    formData={formData}
+                    handleInputChange={handleInputChange}
+                    errors={errors}
+                    countries={countries}
+                  />
+                </div>
 
                   <div className="mb-8 lg:mb-12">
                     <DateTimeInfo
@@ -1530,8 +1566,14 @@ console.log("currentStep", currentStep)
                         <span className="text-white text-lg lg:text-xl">👤</span>
                       </div>
                       <div>
-                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">Personal Information</h2>
-                        <p className="text-sm lg:text-base text-gray-600">Tell us about yourself</p>
+                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
+                          {formData.reportingFor === 'someone_else' ? 'Their Personal Information' : 'Your Personal Information'}
+                        </h2>
+                        <p className="text-sm lg:text-base text-gray-600">
+                          {formData.reportingFor === 'someone_else'
+                            ? 'Please tell us about the person you are reporting for'
+                            : 'Tell us about yourself'}
+                        </p>
                       </div>
                     </div>
                     
@@ -1574,42 +1616,55 @@ console.log("currentStep", currentStep)
                   </div>
 
                   {/* Legal Problem - Last for non-emergency */}
-                  <div className="mb-8 lg:mb-12">
-                    <div className="flex items-center mb-6 lg:mb-8">
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mr-3 lg:mr-4">
-                        <span className="text-white text-lg lg:text-xl">📋</span>
-                      </div>
-                      <div>
-                        <h2 className="text-xl lg:text-2xl font-bold text-gray-800">Legal Issue</h2>
-                        <p className="text-sm lg:text-base text-gray-600">Describe your legal problem in detail</p>
-                      </div>
+                <div className="mb-8 lg:mb-12">
+                  <div className="flex items-center mb-6 lg:mb-8">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mr-3 lg:mr-4">
+                      <span className="text-white text-lg lg:text-xl">📋</span>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
-                        Describe your legal problem in detail *
-                      </label>
-                      <textarea
-                        value={formData.problem}
-                        onChange={(e) => handleInputChange('problem', e.target.value)}
-                        className={`w-full px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none ${
-                          errors.problem ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                        rows={5}
-                        placeholder="Please provide as much detail as possible about your legal issue. Include relevant dates, people involved, documents, and what outcome you're seeking."
-                      />
-                      {errors.problem && (
-                        <p className="text-red-500 text-sm mt-2 flex items-center">
-                          <span className="mr-1">⚠️</span>
-                          {errors.problem}
-                        </p>
-                      )}
-                      <p className="text-sm text-gray-500 mt-2 flex items-center">
-                        <span className="mr-1">💬</span>
-                        {formData.problem.length} characters. More details help us provide better advice.
+                    <div>
+                      <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
+                        {formData.reportingFor === 'someone_else' ? 'Their Legal Issue' : 'Your Legal Issue'}
+                      </h2>
+                      <p className="text-sm lg:text-base text-gray-600">
+                        {formData.reportingFor === 'someone_else'
+                          ? 'Describe their legal problem in detail'
+                          : 'Describe your legal problem in detail'}
                       </p>
                     </div>
                   </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2 lg:mb-3">
+                      {formData.reportingFor === 'someone_else'
+                        ? 'Describe their legal problem in detail *'
+                        : 'Describe your legal problem in detail *'}
+                    </label>
+                    <textarea
+                      value={formData.problem}
+                      onChange={(e) => handleInputChange('problem', e.target.value)}
+                      className={`w-full px-4 py-3 lg:px-6 lg:py-4 bg-white border-2 rounded-xl lg:rounded-2xl text-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none ${
+                        errors.problem ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      rows={5}
+                      placeholder={
+                        formData.reportingFor === 'someone_else'
+                          ? "Please provide as much detail as possible about their legal issue. Include relevant dates, people involved, documents, and what outcome they're seeking."
+                          : "Please provide as much detail as possible about your legal issue. Include relevant dates, people involved, documents, and what outcome you're seeking."
+                      }
+                    />
+                    {errors.problem && (
+                      <p className="text-red-500 text-sm mt-2 flex items-center">
+                        <span className="mr-1">⚠️</span>
+                        {errors.problem}
+                      </p>
+                    )}
+                    <p className="text-sm text-gray-500 mt-2 flex items-center">
+                      <span className="mr-1">💬</span>
+                      {formData.problem.length} characters. More details help us provide better advice.
+                    </p>
+                  </div>
+                </div>
+
                 </>
               )}
 
@@ -1647,9 +1702,9 @@ console.log("currentStep", currentStep)
                   <div>
                     <p className="font-semibold text-amber-800 mb-2">Important Disclaimer:</p>
                     <p className="text-amber-700 text-sm leading-relaxed">
-                      This AI assistant provides general legal information and guidance. It does not constitute 
-                      legal advice and should not replace consultation with a qualified attorney. For complex 
-                      legal matters, please consult with a licensed lawyer in your jurisdiction.
+                      This AI assistant provides general information and guidance related to common legal situations. It is not a substitute 
+                      for professional advice and does not replace consultation with a qualified attorney. For serious or complex matters, 
+                      please consult with a licensed lawyer in your jurisdiction.
                     </p>
                   </div>
                 </div>

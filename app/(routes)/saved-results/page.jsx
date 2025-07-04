@@ -14,7 +14,7 @@ const ResultsModal = ({ query, onClose }) => {
       <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[100vh] overflow-hidden">
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Legal Advice Details</h2>
+          <h2 className="text-2xl font-bold">Your Guidance Summary</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all"
@@ -515,9 +515,9 @@ const filteredQueries = (queries || []).filter(query => {
           <div className="mb-8">
             <div className="flex items-center mb-4">
               <BookOpen className="w-8 h-8 text-indigo-600 mr-3" />
-              <h1 className="text-3xl font-bold text-gray-800">Saved Legal Results</h1>
+              <h1 className="text-3xl font-bold text-gray-800">Saved Results</h1>
             </div>
-            <p className="text-gray-600">View and manage your previously saved legal consultations</p>
+            <p className="text-gray-600">View and manage your previously saved assistance queries</p>
           </div>
 
           {/* Search and Filter Bar */}
@@ -572,7 +572,7 @@ const filteredQueries = (queries || []).filter(query => {
                       </div>
                       
                       <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                        Legal Consultation
+                        Assistance Request
                       </h3>
                       
                       <p className="text-gray-600 mb-3">
