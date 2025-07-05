@@ -855,7 +855,7 @@ console.log("currentStep", currentStep)
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to get legal advice');
+        throw new Error(result.error || 'Failed to get legal guide');
       }
 
       setResults(result.data);
@@ -865,7 +865,7 @@ console.log("currentStep", currentStep)
       formStorage.save('results_data', result.data);
     } catch (error) {
       console.error('API Error:', error);
-      alert('Something went wrong while fetching legal advice. Please try again.');
+      alert('Something went wrong while fetching legal guide. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -1003,7 +1003,7 @@ console.log("currentStep", currentStep)
                   <div className="text-left">
                     <div className="font-bold text-sm sm:text-base">NO - General Legal Consultation</div>
                     <div className="text-xs sm:text-sm text-cyan-100 mt-1">
-                      Non-urgent legal matter or general advice needed
+                      Non-urgent legal matter or general guidance needed
                     </div>
                   </div>
                 </span>
@@ -1044,7 +1044,7 @@ console.log("currentStep", currentStep)
                     onClick={handleSaveResults}
                     className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
                 >
-                    Save Legal Advice
+                    Save Legal Steps
                 </LoadingButton>
                 </div>
                 {/* Results */}
@@ -1660,7 +1660,7 @@ console.log("currentStep", currentStep)
                     )}
                     <p className="text-sm text-gray-500 mt-2 flex items-center">
                       <span className="mr-1">💬</span>
-                      {formData.problem.length} characters. More details help us provide better advice.
+                      {formData.problem.length} characters. More details help us provide better guidance.
                     </p>
                   </div>
                 </div>
