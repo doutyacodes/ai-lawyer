@@ -33,6 +33,9 @@ export const LEGAL_QUERIES = mysqlTable("legal_queries", {
   // Who asked
   user_id: int("user_id").notNull().references(() => USERS.id),
 
+  // Optional user-defined title
+  title: varchar("title", { length: 255 }),
+
   // User input (dynamic fields)
   country: varchar("country", { length: 100 }),
   state: varchar("state", { length: 100 }),

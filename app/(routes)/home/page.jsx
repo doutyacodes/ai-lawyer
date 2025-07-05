@@ -863,6 +863,7 @@ console.log("currentStep", currentStep)
       
       // Save results to storage
       formStorage.save('results_data', result.data);
+      formStorage.save('form_data', formData);
     } catch (error) {
       console.error('API Error:', error);
       alert('Something went wrong while fetching legal guide. Please try again.');
@@ -884,7 +885,7 @@ console.log("currentStep", currentStep)
     }
 
     setLoading(true);
-    
+    const form_data = formStorage.load('form_data')
     try {
       const response = await fetch('/api/save-query', {
         method: 'POST',
@@ -892,7 +893,7 @@ console.log("currentStep", currentStep)
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...formData,
+          ...form_data,
           response_json: results
         }),
       });
@@ -904,7 +905,7 @@ console.log("currentStep", currentStep)
         formStorage.clear('form_data');
         formStorage.clear('results_data');
         
-        // Redirect to saved results page
+        // // Redirect to saved results page
         window.location.href = '/saved-results';
       } else if (data.requiresAuth) {
         window.location.href = '/auth/login?redirect=' + encodeURIComponent(window.location.pathname);
@@ -957,7 +958,7 @@ console.log("currentStep", currentStep)
       countryCode: '', // Store country ISO code separately
       stateCode: '', // Store state ISO code separately
     });
-    formStorage.clear('form_data');
+    // formStorage.clear('form_data');
     formStorage.clear('results_data');
     setErrors({});
     setResults(null);
@@ -1319,13 +1320,28 @@ console.log("currentStep", currentStep)
                                               </a>
                                           )}
                                           
-                                          {contact.website && (
-                                              <a href={contact.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium">
-                                                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                  </svg>
-                                                  Website
-                                              </a>
+                                          {contact.website && /^https?:\/\//.test(contact.website) && (
+                                            <a
+                                              href={contact.website}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+                                            >
+                                              <svg
+                                                className="w-3 h-3 sm:w-4 sm:h-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth="2"
+                                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                                />
+                                              </svg>
+                                              Website
+                                            </a>
                                           )}
                                       </div>
                                       

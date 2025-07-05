@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Calendar, Eye, Trash2, Search, Filter, ChevronLeft, ChevronRight, X, ArrowLeft } from 'lucide-react';
+import { BookOpen, Calendar, Eye, Trash2, Search, Filter, ChevronLeft, ChevronRight, X, ArrowLeft, Edit3, Check } from 'lucide-react';
 import { LoadingButton, LoadingOverlay } from '@/components/ui/Loading';
 
 
@@ -302,13 +302,28 @@ const ResultsModal = ({ query, onClose }) => {
                                             </a>
                                         )}
                                         
-                                        {contact.website && (
-                                            <a href={contact.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium">
-                                                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                </svg>
-                                                Website
-                                            </a>
+                                        {contact.website && /^https?:\/\//.test(contact.website) && (
+                                          <a
+                                            href={contact.website}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+                                          >
+                                            <svg
+                                              className="w-3 h-3 sm:w-4 sm:h-4"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                              />
+                                            </svg>
+                                            Website
+                                          </a>
                                         )}
                                     </div>
                                     
@@ -376,6 +391,7 @@ const ResultsModal = ({ query, onClose }) => {
 
 export default function SavedResultsPage() {
   const [queries, setQueries] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -384,8 +400,13 @@ export default function SavedResultsPage() {
   const [selectedQuery, setSelectedQuery] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(null);
+  const [tempTitle, setTempTitle] = useState('');
+  const [updateLoading, setUpdateLoading] = useState(false);
   
   const itemsPerPage = 10;
+
+  const offset = (currentPage - 1) * itemsPerPage;
 
 useEffect(() => {
     const checkAndFetch = async () => {
@@ -421,13 +442,14 @@ useEffect(() => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // 
+        credentials: 'include',
       });
 
       const data = await response.json();
       
       if (data.success) {
         setQueries(data.data);
+        setTotal(data.total);
         setTotalPages(Math.ceil(data.total / itemsPerPage));
       } else {
         setError(data.error || 'Failed to fetch saved results');
@@ -447,22 +469,87 @@ useEffect(() => {
   };
 
   const handleDeleteQuery = async (queryId) => {
-    if (!confirm('Are you sure you want to delete this saved result?')) {
+    if (!confirm('Are you sure you want to delete this saved result? This action cannot be undone.')) {
       return;
     }
 
     try {
       setDeleteLoading(true);
-      // Simulate delete API call
-      setTimeout(() => {
+      
+      const response = await fetch(`/api/legal-queries/${queryId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Remove the deleted query from the local state
         setQueries(queries.filter(q => q.id !== queryId));
-        setDeleteLoading(false);
-      }, 1000);
+        setTotal(prev => prev - 1);
+        
+        // Recalculate total pages
+        const newTotalPages = Math.ceil((total - 1) / itemsPerPage);
+        setTotalPages(newTotalPages);
+        
+        // If current page is now empty and not the first page, go to previous page
+        if (currentPage > 1 && queries.length === 1) {
+          setCurrentPage(prev => prev - 1);
+        }
+      } else {
+        setError(data.error || 'Failed to delete result');
+      }
     } catch (error) {
       console.error('Error deleting query:', error);
       setError('Failed to delete result');
+    } finally {
       setDeleteLoading(false);
     }
+  };
+
+  const handleEditTitle = (query) => {
+    setEditingTitle(query.id);
+    setTempTitle(query.title || '');
+  };
+
+  const handleSaveTitle = async (queryId) => {
+    try {
+      setUpdateLoading(true);
+      
+      const response = await fetch(`/api/legal-queries/${queryId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ title: tempTitle }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Update the query in local state
+        setQueries(queries.map(q => 
+          q.id === queryId 
+            ? { ...q, title: tempTitle }
+            : q
+        ));
+        setEditingTitle(null);
+        setTempTitle('');
+      } else {
+        setError(data.error || 'Failed to update title');
+      }
+    } catch (error) {
+      console.error('Error updating title:', error);
+      setError('Failed to update title');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTitle(null);
+    setTempTitle('');
   };
 
 const filteredQueries = (queries || []).filter(query => {
@@ -475,10 +562,11 @@ const filteredQueries = (queries || []).filter(query => {
     const searchLower = searchTerm.toLowerCase();
     const problemMatch = query.problem?.toLowerCase().includes(searchLower);
     const introMatch = query.response_json?.ai_intro?.toLowerCase().includes(searchLower);
+    const titleMatch = query.title?.toLowerCase().includes(searchLower);
     
-    console.log('Problem match:', problemMatch, 'Intro match:', introMatch);
+    console.log('Problem match:', problemMatch, 'Intro match:', introMatch, 'Title match:', titleMatch);
     
-    return problemMatch || introMatch;
+    return problemMatch || introMatch || titleMatch;
   });
 
   const formatDate = (dateString) => {
@@ -494,6 +582,10 @@ const filteredQueries = (queries || []).filter(query => {
   const truncateText = (text, maxLength = 150) => {
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
+  const getDisplayTitle = (query) => {
+    return query.title || 'Legal Assistance Request';
   };
 
   if (loading) {
@@ -558,61 +650,112 @@ const filteredQueries = (queries || []).filter(query => {
                 </p>
               </div>
             ) : (
-              filteredQueries.map((query) => (
-                <div key={query.id} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
-                          {query.locality}, {query.state}
-                        </span>
-                        <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
-                          Case #{query.id}
-                        </span>
-                      </div>
-                      
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                        Assistance Request
-                      </h3>
-                      
-                      <p className="text-gray-600 mb-3">
-                        {truncateText(query.problem)}
-                      </p>
-                      
-                      <div className="flex items-center text-sm text-gray-500 gap-4">
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {formatDate(query.created_at)}
+              filteredQueries.map((query, index) => {
+                  const caseNumber = total - (offset + index);
+                  const isEditing = editingTitle === query.id;
+                  
+                  return (
+                    <div key={query.id} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
+                              {query.country}, {query.state}
+                            </span>
+                            <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm" title={`Database ID: ${query.id}`}>
+                              Case #{caseNumber}
+                            </span>
+                          </div>
+
+                          {/* Editable Title */}
+                          <div className="mb-2">
+                            {isEditing ? (
+                              <div className="flex items-center gap-2 mb-2">
+                                <input
+                                  type="text"
+                                  value={tempTitle}
+                                  onChange={(e) => setTempTitle(e.target.value)}
+                                  placeholder="Enter a title for this case..."
+                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                  autoFocus
+                                />
+                                <button
+                                  onClick={() => handleSaveTitle(query.id)}
+                                  disabled={updateLoading}
+                                  className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition-colors duration-200"
+                                >
+                                  {updateLoading ? (
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                  ) : (
+                                    <Check className="w-4 h-4" />
+                                  )}
+                                </button>
+                                <button
+                                  onClick={handleCancelEdit}
+                                  className="px-3 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="text-lg font-semibold text-gray-800">
+                                  {getDisplayTitle(query)}
+                                </h3>
+                                <button
+                                  onClick={() => handleEditTitle(query)}
+                                  className="p-1 text-gray-400 hover:text-indigo-600 transition-colors duration-200"
+                                  title="Edit title"
+                                >
+                                  <Edit3 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          <p className="text-gray-600 mb-3">
+                            {truncateText(query.problem)}
+                          </p>
+
+                          <div className="flex items-center text-sm text-gray-500 gap-4">
+                            <div className="flex items-center">
+                              <Calendar className="w-4 h-4 mr-1" />
+                              {formatDate(query.created_at)}
+                            </div>
+                            <div className="flex items-center">
+                              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                              Completed
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                          Completed
+
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleViewQuery(query)}
+                            className="flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Details
+                          </button>
+
+                          <button
+                            onClick={() => handleDeleteQuery(query.id)}
+                            disabled={deleteLoading}
+                            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {deleteLoading ? (
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            ) : (
+                              <Trash2 className="w-4 h-4 mr-2" />
+                            )}
+                            Delete
+                          </button>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-3 lg:flex-col lg:gap-2">
-                      <button
-                        onClick={() => handleViewQuery(query)}
-                        className="flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Details
-                      </button>
-                      
-                      {/* <LoadingButton
-                        loading={deleteLoading}
-                        onClick={() => handleDeleteQuery(query.id)}
-                        className="flex items-center px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all duration-200"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
-                      </LoadingButton> */}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+                  );
+                })
+              )}
           </div>
 
           {/* Pagination */}
