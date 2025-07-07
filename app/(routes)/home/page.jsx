@@ -285,7 +285,7 @@ export default function LegalAssistantPage() {
               Legal Assistant
             </h1>
             <p className="text-gray-200 leading-relaxed text-base sm:text-lg mb-6 sm:mb-8 px-2">
-              Choose the type of legal assistance you need. We'll guide you through the process and provide appropriate legal information.
+              Choose the type of legal assistance you need. We&apos;ll guide you through the process and provide appropriate legal information.
             </p>
           </div>
           
@@ -338,7 +338,7 @@ export default function LegalAssistantPage() {
           
           <div className="mt-8 sm:mt-12 text-center">
             <p className="text-yellow-100 text-xs sm:text-sm">
-              <span className="font-semibold">⚠️ If you're in immediate physical danger:</span><br/>
+              <span className="font-semibold">⚠️ If you&apos;re in immediate physical danger:</span><br/>
               Please contact emergency services (911, 112, or your local emergency number) first.
             </p>
             
@@ -437,7 +437,7 @@ export default function LegalAssistantPage() {
                     <div>
                       <p className={`font-bold ${config.alertTitle} mb-1`}>Emergency Priority</p>
                       <p className={`${config.alertText} text-sm`}>
-                        If you're in immediate physical danger, contact emergency services (911, 112) first.
+                        If you&apos;re in immediate physical danger, contact emergency services (911, 112) first.
                       </p>
                     </div>
                   </div>
